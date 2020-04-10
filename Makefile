@@ -1,4 +1,4 @@
-all: bin/todo
+all: bin/todo format
 
 bin/todo: build/main.o
 	gcc -Wall -Werror build/main.o -o bin/todo `pkg-config --cflags --libs gtk+-3.0`
