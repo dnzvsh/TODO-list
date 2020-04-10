@@ -1,10 +1,10 @@
 all: bin/todo format
 
 bin/todo: build/main.o
-	gcc -Wall -Werror build/main.o -o bin/todo `pkg-config --cflags --libs gtk+-3.0`
+	gcc -Wall -Werror build/main.o -o bin/todo `pkg-config --cflags --libs gtk+-3.0` -lsqlite3
 
 build/main.o: src/main.c
-	gcc -Wall -Werror -c src/main.c -o build/main.o `pkg-config --cflags --libs gtk+-3.0`
+	gcc -Wall -Werror -c src/main.c -o build/main.o `pkg-config --cflags --libs gtk+-3.0` -lsqlite3
 
 format: src/main.c
 	clang-format -i src/main.c
