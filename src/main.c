@@ -1,4 +1,17 @@
+#include "sqlite3.h"
 #include <gtk/gtk.h>
+#include <stdio.h>
+
+const char* TODO
+        = "CREATE TABLE IF NOT EXISTS TODO(id integer primary key "
+          "autoincrement, Task_name TEXT, Task_body TEXT, Date date);";
+const char* TAGS
+        = "CREATE TABLE IF NOT EXISTS TAGS(id integer primary key "
+          "autoincrement, tag TEXT);";
+const char* TODO_TAGS
+        = "CREATE TABLE IF NOT EXISTS TODO_TAGS(Tags_id integer primary key, "
+          "Task_id integer, Foreign key (Tags_id) References TAGS(id), Foreign "
+          "key (Task_id) References TODO(id));";
 
 static void print_hello(GtkWidget* widget, gpointer data)
 {
@@ -29,6 +42,30 @@ static void activate(GtkApplication* app, gpointer user_data)
 
 int main(int argc, char** argv)
 {
+    sqlite3* db = 0; // хэндл объекта соединение к БД
+    char* err = 0;
+
+    // открываем соединение
+    if (sqlite3_open("database.db", &db))
+        fprintf(stderr,
+                "Ошибка открытия/создания БД: %s\n",
+                sqlite3_errmsg(db));
+    // выполняем SQL
+    else if (sqlite3_exec(db, TODO, 0, 0, &err)) {
+        fprintf(stderr, "Ошибка SQL: %sn", err);
+        sqlite3_free(err);
+    }
+    if (sqlite3_exec(db, TAGS, 0, 0, &err)) {
+        fprintf(stderr, "Ошибка SQL: %sn", err);
+        sqlite3_free(err);
+    }
+    if (sqlite3_exec(db, TODO_TAGS, 0, 0, &err)) {
+        fprintf(stderr, "Ошибка SQL: %sn", err);
+        sqlite3_free(err);
+    }
+    // закрываем соединение
+    sqlite3_close(db);
+
     GtkApplication* app;
     int status;
 
