@@ -1,10 +1,11 @@
 #include "sqlite3.h"
+#include "task.h"
 #include <gtk/gtk.h>
 #include <stdio.h>
 
 const char* TODO
         = "CREATE TABLE IF NOT EXISTS TODO(id integer primary key "
-          "autoincrement, Task_name TEXT, Task_body TEXT, Date date);";
+          "autoincrement, Task TEXT, Date TEXT);";
 const char* TAGS
         = "CREATE TABLE IF NOT EXISTS TAGS(id integer primary key "
           "autoincrement, tag TEXT);";
@@ -67,6 +68,16 @@ int main(int argc, char** argv)
     if (sqlite3_exec(db, TODO_TAGS, 0, 0, &err)) {
         fprintf(stderr, "Ошибка SQL: %sn", err);
         sqlite3_free(err);
+        return 0;
+    }
+    char task[1000];
+    char* t = &task[0];
+    printf("Введите заметку:\n");
+    scanf("%s", t);
+    int uncorrect = add_task(db, t);
+    if (uncorrect) {
+        printf("Error\n");
+        sqlite3_close(db);
         return 0;
     }
     // закрываем соединение
