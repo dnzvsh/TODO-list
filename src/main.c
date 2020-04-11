@@ -45,7 +45,6 @@ int main(int argc, char** argv)
 {
     sqlite3* db = 0; // хэндл объекта соединение к БД
     char* err = 0;
-
     // открываем соединение
     if (sqlite3_open("src/database.db", &db)) {
         fprintf(stderr,
@@ -79,6 +78,7 @@ int main(int argc, char** argv)
         t[i] = k;
         i++;
     }
+    t[i] = '\0';
     printf("string = %s\n", t);
     int uncorrect = add_task(db, t);
     if (uncorrect) {
