@@ -4,15 +4,13 @@
 #include <stdio.h>
 
 const char* TODO
-        = "CREATE TABLE IF NOT EXISTS TODO(id integer primary key "
-          "autoincrement, Task TEXT, Date TEXT);";
-const char* TAGS
-        = "CREATE TABLE IF NOT EXISTS TAGS(id integer primary key "
-          "autoincrement, tag TEXT);";
-const char* TODO_TAGS
-        = "CREATE TABLE IF NOT EXISTS TODO_TAGS(Tags_id integer primary key, "
-          "Task_id integer, Foreign key (Tags_id) References TAGS(id), Foreign "
-          "key (Task_id) References TODO(id));";
+        = "CREATE TABLE IF NOT EXISTS TODO(task_id integer primary key, Task "
+          "TEXT, Date TEXT);";
+const char* CATEGORIES
+        = "CREATE TABLE IF NOT EXISTS CATEGORIES(category_id integer primary "
+          "key "
+          "autoincrement, task_id integer,category_name TEXT,Foreign key "
+          "(category_id) References TODO(task_id));";
 
 static void print_hello(GtkWidget* widget, gpointer data)
 {
@@ -59,12 +57,7 @@ int main(int argc, char** argv)
         sqlite3_free(err);
         return 0;
     }
-    if (sqlite3_exec(db, TAGS, 0, 0, &err)) {
-        fprintf(stderr, "Ошибка SQL: %sn", err);
-        sqlite3_free(err);
-        return 0;
-    }
-    if (sqlite3_exec(db, TODO_TAGS, 0, 0, &err)) {
+    if (sqlite3_exec(db, CATEGORIES, 0, 0, &err)) {
         fprintf(stderr, "Ошибка SQL: %sn", err);
         sqlite3_free(err);
         return 0;
