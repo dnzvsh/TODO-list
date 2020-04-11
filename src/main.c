@@ -4,7 +4,8 @@
 #include <stdio.h>
 
 const char* TODO
-        = "CREATE TABLE IF NOT EXISTS TODO(task_id integer primary key, Task "
+        = "CREATE TABLE IF NOT EXISTS TODO(task_id integer primary key "
+          "autoincrement, Task "
           "TEXT, Date TEXT);";
 const char* CATEGORIES
         = "CREATE TABLE IF NOT EXISTS CATEGORIES(category_id integer primary "
@@ -74,6 +75,16 @@ int main(int argc, char** argv)
     t[i] = '\0';
     printf("string = %s\n", t);
     int uncorrect = add_task(db, t);
+    if (uncorrect) {
+        printf("Error\n");
+        sqlite3_close(db);
+        return 0;
+    }
+
+    int id;
+    printf("Введите Индекс для удаления\n");
+    scanf("%d", &id);
+    uncorrect = delete_task(db, id);
     if (uncorrect) {
         printf("Error\n");
         sqlite3_close(db);
