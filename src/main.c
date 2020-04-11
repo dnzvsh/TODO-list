@@ -2,6 +2,7 @@
 #include "task.h"
 #include <gtk/gtk.h>
 #include <stdio.h>
+#include <string.h>
 
 const char* TODO
         = "CREATE TABLE IF NOT EXISTS TODO(task_id integer primary key "
@@ -12,6 +13,8 @@ const char* CATEGORIES
           "key "
           "autoincrement, task_id integer,category_name TEXT,Foreign key "
           "(category_id) References TODO(task_id));";
+
+/*
 
 static void print_hello(GtkWidget* widget, gpointer data)
 {
@@ -39,7 +42,7 @@ static void activate(GtkApplication* app, gpointer user_data)
 
     gtk_widget_show_all(window);
 }
-
+*/
 int main(int argc, char** argv)
 {
     sqlite3* db = 0; // хэндл объекта соединение к БД
@@ -63,43 +66,55 @@ int main(int argc, char** argv)
         sqlite3_free(err);
         return 0;
     }
-    char task[1000];
-    char* t = &task[0];
-    int i = 0;
-    char k;
-    printf("Введите заметку:\n");
-    while ((k = getchar()) != '\n') {
-        t[i] = k;
-        i++;
+    printf("0 - add, 1 - remove, 2 - show\n");
+    if (!strcmp(argv[1], "0")) {
+        char task[1000];
+        char* t = &task[0];
+        int i = 0;
+        char k;
+        printf("Введите заметку:\n");
+        while ((k = getchar()) != '\n') {
+            t[i] = k;
+            i++;
+        }
+        t[i] = '\0';
+        printf("string = %s\n", t);
+        int uncorrect = add_task(db, t);
+        if (uncorrect) {
+            printf("Error\n");
+            sqlite3_close(db);
+            return 0;
+        }
     }
-    t[i] = '\0';
-    printf("string = %s\n", t);
-    int uncorrect = add_task(db, t);
-    if (uncorrect) {
-        printf("Error\n");
-        sqlite3_close(db);
-        return 0;
+    if (!strcmp(argv[1], "1")) {
+        int id;
+        printf("Введите Индекс для удаления\n");
+        scanf("%d", &id);
+        int uncorrect = delete_task(db, id);
+        if (uncorrect) {
+            printf("Error\n");
+            sqlite3_close(db);
+            return 0;
+        }
     }
-
-    int id;
-    printf("Введите Индекс для удаления\n");
-    scanf("%d", &id);
-    uncorrect = delete_task(db, id);
-    if (uncorrect) {
-        printf("Error\n");
-        sqlite3_close(db);
-        return 0;
+    if (!strcmp(argv[1], "2")) {
+        show_task(db);
     }
     // закрываем соединение
     sqlite3_close(db);
 
-    GtkApplication* app;
-    int status;
+    /*
+        GtkApplication* app;
+        int status;
 
-    app = gtk_application_new("org.gtk.example", G_APPLICATION_FLAGS_NONE);
-    g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
-    status = g_application_run(G_APPLICATION(app), argc, argv);
-    g_object_unref(app);
+        app = gtk_application_new("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+        g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
+        status = g_application_run(G_APPLICATION(app), argc, argv);
+        g_object_unref(app);
 
     return status;
+
+    */
+
+    return 0;
 }
