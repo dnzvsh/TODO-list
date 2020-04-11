@@ -6,20 +6,18 @@
 
 int add_task(sqlite3* db, char* task)
 {
-    char* err = 0;
-    char add[1100] = "INSERT INTO TODO (task,date) VALUES ('";
-    char* sql = &add[0];
+    sqlite3_stmt* stmt;
+    sqlite3_prepare_v2(
+            db, "INSERT INTO TODO (task,date) VALUES (?,?);", -1, &stmt, NULL);
     const time_t sec = time(NULL);
     char* t = ctime(&sec);
-    sql = strncat(sql, task, 1000);
-    sql = strncat(sql, "','", 4);
-    sql = strncat(sql, t, 30);
-    sql = strncat(sql, "');", 4);
-    printf("%s\n", sql);
-    int rc = sqlite3_exec(db, sql, 0, 0, &err);
-    if (rc != SQLITE_OK) {
-        sqlite3_free(err);
+    sqlite3_bind_text(stmt, 1, task, -1, NULL);
+    sqlite3_bind_text(stmt, 2, t, -1, NULL);
+    int err = sqlite3_step(stmt);
+    if (err != SQLITE_DONE) {
+        sqlite3_finalize(stmt);
         return -1;
     }
+    sqlite3_finalize(stmt);
     return 0;
 }

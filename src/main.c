@@ -72,8 +72,14 @@ int main(int argc, char** argv)
     }
     char task[1000];
     char* t = &task[0];
+    int i = 0;
+    char k;
     printf("Введите заметку:\n");
-    scanf("%s", t);
+    while ((k = getchar()) != '\n') {
+        t[i] = k;
+        i++;
+    }
+    printf("string = %s\n", t);
     int uncorrect = add_task(db, t);
     if (uncorrect) {
         printf("Error\n");
