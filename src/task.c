@@ -4,15 +4,19 @@
 #include <string.h>
 #include <time.h>
 
-int add_task(sqlite3* db, char* task)
+const int sql_request(Task_data* data)
 {
     sqlite3_stmt* stmt;
-    sqlite3_prepare_v2(
-            db, "INSERT INTO TODO (Task,Date) VALUES (?,?);", -1, &stmt, NULL);
-    const time_t sec = time(NULL);
-    char* t = ctime(&sec);
-    sqlite3_bind_text(stmt, 1, task, -1, NULL);
-    sqlite3_bind_text(stmt, 2, t, -1, NULL);
+    int i = 1;
+    sqlite3_prepare_v2(data->db, data->sql, -1, &stmt, NULL);
+    if (strcmp(data->task, " ")) {
+        sqlite3_bind_text(stmt, i, data->task, -1, NULL);
+        i++;
+    }
+    if (data->date) {
+        sqlite3_bind_text(stmt, i, data->date, -1, NULL);
+        i++;
+    }
     int err = sqlite3_step(stmt);
     if (err != SQLITE_DONE) {
         sqlite3_finalize(stmt);
@@ -22,36 +26,55 @@ int add_task(sqlite3* db, char* task)
     return 0;
 }
 
-int delete_task(sqlite3* db, char* date)
+int add_task(sqlite3* db, char* task)
 {
-    sqlite3_stmt* stmt;
-    sqlite3_prepare_v2(db, "DELETE FROM TODO WHERE Date = ?;", -1, &stmt, NULL);
-    sqlite3_bind_text(stmt, 1, date, -1, NULL);
-    int err = sqlite3_step(stmt);
-    if (err != SQLITE_DONE) {
-        sqlite3_finalize(stmt);
+    if (!task) {
+        return -3;
+    }
+    Task_data data;
+    data.db = db;
+    strcpy(data.sql, "INSERT INTO TODO (Task,Date) VALUES (?,?);");
+    strcpy(data.task, task);
+    const time_t sec = time(NULL);
+    char* t = ctime(&sec);
+    strcpy(data.date, t);
+    int err = sql_request(&data);
+    if (err) {
         return -2;
     }
-    sqlite3_finalize(stmt);
+    return 0;
+}
+
+int delete_task(sqlite3* db, char* date)
+{
+    Task_data data;
+    data.db = db;
+    strcpy(data.sql, "DELETE FROM TODO WHERE Date = ?;");
+    strcpy(data.task, " ");
+    int err = sql_request(&data);
+    if (err) {
+        return -4;
+    }
     return 0;
 }
 
 int update_task(sqlite3* db, char* task, char* date)
 {
-    sqlite3_stmt* stmt;
-    sqlite3_prepare_v2(
-            db, "UPDATE TODO SET Task = ? WHERE Date = ? ", -1, &stmt, NULL);
-    sqlite3_bind_text(stmt, 1, task, -1, NULL);
-    sqlite3_bind_text(stmt, 2, date, -1, NULL);
-    int err = sqlite3_step(stmt);
-    if (err != SQLITE_DONE) {
-        sqlite3_finalize(stmt);
-        return -3;
+    if (!task) {
+        return -5;
     }
-    sqlite3_finalize(stmt);
+    Task_data data;
+    data.db = db;
+    strcpy(data.sql, "UPDATE TODO SET Task = ? WHERE Date = ?;");
+    strcpy(data.date, date);
+    strcpy(data.task, task);
+    int err = sql_request(&data);
+    if (err) {
+        return -6;
+    }
     return 0;
 }
-
+/*
 int add_category(sqlite3* db, char* category_name)
 {
     sqlite3_stmt* stmt;
@@ -70,7 +93,7 @@ int add_category(sqlite3* db, char* category_name)
     sqlite3_finalize(stmt);
     return 0;
 }
-
+*/
 void show_task(sqlite3* db)
 {
     sqlite3_stmt* stmt;
