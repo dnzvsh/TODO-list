@@ -3,6 +3,13 @@
 
 #include <sqlite3.h>
 
+typedef struct{
+    char task[1000];
+    char date[25];
+    char sql[150];
+    sqlite3* db;
+}Task_data;
+
 int add_task(sqlite3* db, char* task);
 
 int delete_task(sqlite3* db, char* date);
