@@ -49,47 +49,48 @@ int main(int argc, char** argv)
     char* err = 0;
     // открываем соединение
     if (sqlite3_open("src/database.db", &db)) {
-        fprintf(stderr,
-                "Ошибка открытия/создания БД: %s\n",
-                sqlite3_errmsg(db));
+        printf("Ошибка открытия/создания БД: %s\n", sqlite3_errmsg(db));
         return 0;
     }
 
     // выполняем SQL
     else if (sqlite3_exec(db, TODO, 0, 0, &err)) {
-        fprintf(stderr, "Ошибка SQL: %sn", err);
+        printf("Ошибка SQL: %s\n", err);
         sqlite3_free(err);
         return 0;
     }
     if (sqlite3_exec(db, CATEGORIES, 0, 0, &err)) {
-        fprintf(stderr, "Ошибка SQL: %sn", err);
+        printf("Ошибка SQL: %s\n", err);
         sqlite3_free(err);
         return 0;
     }
     if (argc == 2) {
+        char k;
+        int i = 0;
         if (!strcmp(argv[1], "add")) {
-            char task[1000];
-            char* t = &task[0];
-            int i = 0;
-            char k;
+            char* task = malloc(sizeof(char) * 1000);
             printf("Введите заметку:\n");
             while ((k = getchar()) != '\n') {
-                t[i] = k;
+                task[i] = k;
                 i++;
             }
-            t[i] = '\0';
-            printf("string = %s\n", t);
-            int uncorrect = add_task(db, t);
+            task[i] = '\0';
+            printf("string = %s\n", task);
+            int uncorrect = add_task(db, task);
             if (uncorrect) {
                 printf("Error\n");
                 sqlite3_close(db);
                 return 0;
             }
         } else if (!strcmp(argv[1], "delete")) {
-            int id;
-            printf("Введите Индекс для удаления\n");
-            scanf("%d", &id);
-            int uncorrect = delete_task(db, id);
+            char* date = malloc(sizeof(char) * 30);
+            printf("Введите Дату для удаления\n");
+            while ((k = getchar()) != '\n') {
+                date[i] = k;
+                i++;
+            }
+            date[24] = '\n';
+            int uncorrect = delete_task(db, date);
             if (uncorrect) {
                 printf("Error\n");
                 sqlite3_close(db);
@@ -99,8 +100,6 @@ int main(int argc, char** argv)
             char* date = malloc(sizeof(char) * 30);
             char* task = malloc(sizeof(char) * 1000);
             printf("Введите дату заметки для исправления\n");
-            int i = 0;
-            char k;
             while ((k = getchar()) != '\n') {
                 date[i] = k;
                 i++;
@@ -108,6 +107,7 @@ int main(int argc, char** argv)
             date[24] = '\n';
             printf("Введите исправление\n");
             i = 0;
+            k = '0';
             while ((k = getchar()) != '\n') {
                 task[i] = k;
                 i++;

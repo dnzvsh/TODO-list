@@ -22,12 +22,11 @@ int add_task(sqlite3* db, char* task)
     return 0;
 }
 
-int delete_task(sqlite3* db, int id)
+int delete_task(sqlite3* db, char* date)
 {
     sqlite3_stmt* stmt;
-    sqlite3_prepare_v2(
-            db, "DELETE FROM TODO WHERE task_id = ?;", -1, &stmt, NULL);
-    sqlite3_bind_int(stmt, 1, id);
+    sqlite3_prepare_v2(db, "DELETE FROM TODO WHERE Date = ?;", -1, &stmt, NULL);
+    sqlite3_bind_text(stmt, 1, date, -1, NULL);
     int err = sqlite3_step(stmt);
     if (err != SQLITE_DONE) {
         sqlite3_finalize(stmt);

@@ -5,7 +5,7 @@
 
 int add_task(sqlite3* db, char* task);
 
-int delete_task(sqlite3* db, int id);
+int delete_task(sqlite3* db, char* date);
 
 int update_task(sqlite3* db, char* task, char* date);
 
