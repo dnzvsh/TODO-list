@@ -52,6 +52,25 @@ int update_task(sqlite3* db, char* task, char* date)
     return 0;
 }
 
+int add_category(sqlite3* db, char* category_name)
+{
+    sqlite3_stmt* stmt;
+    sqlite3_prepare_v2(
+            db,
+            "INSERT INTO CATEGORIES (category_name) VALUES (?);",
+            -1,
+            &stmt,
+            NULL);
+    sqlite3_bind_text(stmt, 1, category_name, -1, NULL);
+    int err = sqlite3_step(stmt);
+    if (err != SQLITE_DONE) {
+        sqlite3_finalize(stmt);
+        return -1;
+    }
+    sqlite3_finalize(stmt);
+    return 0;
+}
+
 void show_task(sqlite3* db)
 {
     sqlite3_stmt* stmt;

@@ -119,6 +119,25 @@ int main(int argc, char** argv)
                 sqlite3_close(db);
                 return 0;
             }
+        }
+        if (!strcmp(argv[1], "addC")) {
+            char category[1000];
+            char* c = &category[0];
+            int i = 0;
+            char k;
+            printf("Введите новую категорию: \n");
+            while ((k = getchar()) != '\n') {
+                category[i] = k;
+                i++;
+            }
+            category[i] = '\0';
+            printf("string = %s\n", c);
+            int uncorrect = add_category(db, category);
+            if (uncorrect) {
+                printf("Error\n");
+                sqlite3_close(db);
+                return 0;
+            }
         } else if (!strcmp(argv[1], "show")) {
             show_task(db);
         } else {
