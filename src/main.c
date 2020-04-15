@@ -76,9 +76,9 @@ int main(int argc, char** argv)
             }
             task[i] = '\0';
             printf("string = %s\n", task);
-            int uncorrect = add_task(db, task);
-            if (uncorrect) {
-                printf("Error\n");
+            int err = add_task(db, task);
+            if (err) {
+                parse_error(err);
                 sqlite3_close(db);
                 return 0;
             }
@@ -90,9 +90,9 @@ int main(int argc, char** argv)
                 i++;
             }
             date[24] = '\n';
-            int uncorrect = delete_task(db, date);
-            if (uncorrect) {
-                printf("Error\n");
+            int err = delete_task(db, date);
+            if (err) {
+                parse_error(err);
                 sqlite3_close(db);
                 return 0;
             }
@@ -113,38 +113,38 @@ int main(int argc, char** argv)
                 i++;
             }
             task[i] = '\0';
-            int uncorrect = update_task(db, task, date);
-            if (uncorrect) {
-                printf("Error\n");
+            int err = update_task(db, task, date);
+            if (err) {
+                parse_error(err);
                 sqlite3_close(db);
                 return 0;
             }
-        }
-        if (!strcmp(argv[1], "addC")) {
-            char category[1000];
-            char* c = &category[0];
-            int i = 0;
-            char k;
-            printf("Введите новую категорию: \n");
-            while ((k = getchar()) != '\n') {
-                category[i] = k;
-                i++;
-            }
-            category[i] = '\0';
-            printf("string = %s\n", c);
-            int uncorrect = add_category(db, category);
-            if (uncorrect) {
-                printf("Error\n");
-                sqlite3_close(db);
-                return 0;
-            }
+            /*}  else if (!strcmp(argv[1], "addC")) {
+                 char category[1000];
+                 char* c = &category[0];
+                 int i = 0;
+                 char k;
+                 printf("Введите новую категорию: \n");
+                 while ((k = getchar()) != '\n') {
+                     category[i] = k;
+                     i++;
+                 }
+                 category[i] = '\0';
+                 printf("string = %s\n", c);
+                 int uncorrect = add_category(db, category);
+                 if (uncorrect) {
+                     printf("Error\n");
+                     sqlite3_close(db);
+                     return 0;
+                 }
+             */
         } else if (!strcmp(argv[1], "show")) {
             show_task(db);
         } else {
-            printf("Usage ./bin/todo {add/delete/show}\n");
+            printf("Usage ./bin/todo {add/delete/update/show}\n");
         }
     } else {
-        printf("Usage ./bin/todo {add/delete/show}\n");
+        printf("Usage ./bin/todo {add/delete/update/show}\n");
     }
     // закрываем соединение
     sqlite3_close(db);

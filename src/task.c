@@ -51,6 +51,7 @@ int delete_task(sqlite3* db, char* date)
     data.db = db;
     strcpy(data.sql, "DELETE FROM TODO WHERE Date = ?;");
     strcpy(data.task, " ");
+    strcpy(data.date, date);
     int err = sql_request(&data);
     if (err) {
         return -4;
@@ -117,4 +118,22 @@ void show_task(sqlite3* db)
     }
 
     sqlite3_finalize(stmt);
+}
+
+void parse_error(int err)
+{
+    switch (err) {
+    case -1:
+        printf("Ошибка в запросе\n");
+    case -2:
+        printf("Ошибка при добавлении задания\n");
+    case -3:
+        printf("Добавление пустого задания!\n");
+    case -4:
+        printf("Ошибка при удалении задания\n");
+    case -5:
+        printf("Обновление на пустое задание!\n");
+    case -6:
+        printf("Ошибка при обновлении задания!\n");
+    }
 }

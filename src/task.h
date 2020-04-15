@@ -10,6 +10,8 @@ typedef struct {
     sqlite3* db;
 } Task_data;
 
+void parse_error(int err);
+
 int add_task(sqlite3* db, char* task);
 
 int delete_task(sqlite3* db, char* date);
