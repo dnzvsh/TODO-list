@@ -37,6 +37,22 @@ int delete_task(sqlite3* db, int id)
     return 0;
 }
 
+int update_task(sqlite3* db, char* task, char* date)
+{
+    sqlite3_stmt* stmt;
+    sqlite3_prepare_v2(
+            db, "UPDATE TODO SET Task = ? WHERE Date = ? ", -1, &stmt, NULL);
+    sqlite3_bind_text(stmt, 1, task, -1, NULL);
+    sqlite3_bind_text(stmt, 2, date, -1, NULL);
+    int err = sqlite3_step(stmt);
+    if (err != SQLITE_DONE) {
+        sqlite3_finalize(stmt);
+        return -3;
+    }
+    sqlite3_finalize(stmt);
+    return 0;
+}
+
 void show_task(sqlite3* db)
 {
     sqlite3_stmt* stmt;

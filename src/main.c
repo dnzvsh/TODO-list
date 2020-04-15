@@ -95,6 +95,30 @@ int main(int argc, char** argv)
                 sqlite3_close(db);
                 return 0;
             }
+        } else if (!strcmp(argv[1], "update")) {
+            char* date = malloc(sizeof(char) * 30);
+            char* task = malloc(sizeof(char) * 1000);
+            printf("Введите дату заметки для исправления\n");
+            int i = 0;
+            char k;
+            while ((k = getchar()) != '\n') {
+                date[i] = k;
+                i++;
+            }
+            date[24] = '\n';
+            printf("Введите исправление\n");
+            i = 0;
+            while ((k = getchar()) != '\n') {
+                task[i] = k;
+                i++;
+            }
+            task[i] = '\0';
+            int uncorrect = update_task(db, task, date);
+            if (uncorrect) {
+                printf("Error\n");
+                sqlite3_close(db);
+                return 0;
+            }
         } else if (!strcmp(argv[1], "show")) {
             show_task(db);
         } else {
