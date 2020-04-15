@@ -66,39 +66,42 @@ int main(int argc, char** argv)
         sqlite3_free(err);
         return 0;
     }
-    printf("0 - add, 1 - remove, 2 - show\n");
-    if (!strcmp(argv[1], "0")) {
-        char task[1000];
-        char* t = &task[0];
-        int i = 0;
-        char k;
-        printf("Введите заметку:\n");
-        while ((k = getchar()) != '\n') {
-            t[i] = k;
-            i++;
+    if (argc == 2) {
+        if (!strcmp(argv[1], "add")) {
+            char task[1000];
+            char* t = &task[0];
+            int i = 0;
+            char k;
+            printf("Введите заметку:\n");
+            while ((k = getchar()) != '\n') {
+                t[i] = k;
+                i++;
+            }
+            t[i] = '\0';
+            printf("string = %s\n", t);
+            int uncorrect = add_task(db, t);
+            if (uncorrect) {
+                printf("Error\n");
+                sqlite3_close(db);
+                return 0;
+            }
+        } else if (!strcmp(argv[1], "delete")) {
+            int id;
+            printf("Введите Индекс для удаления\n");
+            scanf("%d", &id);
+            int uncorrect = delete_task(db, id);
+            if (uncorrect) {
+                printf("Error\n");
+                sqlite3_close(db);
+                return 0;
+            }
+        } else if (!strcmp(argv[1], "show")) {
+            show_task(db);
+        } else {
+            printf("Usage ./bin/todo {add/delete/show}\n");
         }
-        t[i] = '\0';
-        printf("string = %s\n", t);
-        int uncorrect = add_task(db, t);
-        if (uncorrect) {
-            printf("Error\n");
-            sqlite3_close(db);
-            return 0;
-        }
-    }
-    if (!strcmp(argv[1], "1")) {
-        int id;
-        printf("Введите Индекс для удаления\n");
-        scanf("%d", &id);
-        int uncorrect = delete_task(db, id);
-        if (uncorrect) {
-            printf("Error\n");
-            sqlite3_close(db);
-            return 0;
-        }
-    }
-    if (!strcmp(argv[1], "2")) {
-        show_task(db);
+    } else {
+        printf("Usage ./bin/todo {add/delete/show}\n");
     }
     // закрываем соединение
     sqlite3_close(db);

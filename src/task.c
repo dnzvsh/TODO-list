@@ -30,24 +30,10 @@ int delete_task(sqlite3* db, int id)
     sqlite3_bind_int(stmt, 1, id);
     int err = sqlite3_step(stmt);
     if (err != SQLITE_DONE) {
-        printf("%d\n", err);
         sqlite3_finalize(stmt);
-        return -3;
+        return -2;
     }
     sqlite3_finalize(stmt);
-    /*char* error;
-    sqlite3_exec(
-            db,
-            "SELECT row_number() over(order by task_id) as task_id "
-            "from TODO;",
-            NULL,
-            0,
-            &error);
-    if (error != NULL) {
-        printf("%s\n", error);
-        sqlite3_free(error);
-        return -2;
-    }*/
     return 0;
 }
 
@@ -61,10 +47,10 @@ void show_task(sqlite3* db)
         for (i = 0; i < num_cols; i++) {
             switch (sqlite3_column_type(stmt, i)) {
             case (SQLITE3_TEXT):
-                printf("%s, ", sqlite3_column_text(stmt, i));
+                printf("%s ", sqlite3_column_text(stmt, i));
                 break;
             case (SQLITE_INTEGER):
-                printf("%d, ", sqlite3_column_int(stmt, i));
+                printf("%d ", sqlite3_column_int(stmt, i));
                 break;
             default:
                 break;
