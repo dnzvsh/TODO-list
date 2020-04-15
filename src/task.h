@@ -5,18 +5,21 @@
 
 typedef struct {
     char task[1000];
-    char date[30];
+    char date[26];
     char sql[150];
     sqlite3* db;
+    char argv[10];
 } Task_data;
+
+void read_data(Task_data* data, char* argv);
 
 void parse_error(int err);
 
-int add_task(sqlite3* db, char* task);
+int add_task(Task_data* data);
 
-int delete_task(sqlite3* db, char* date);
+int delete_task(Task_data* data);
 
-int update_task(sqlite3* db, char* task, char* date);
+int update_task(Task_data* data);
 
 int add_category(sqlite3* db, char* category_name);
 

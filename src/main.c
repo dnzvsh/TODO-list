@@ -46,7 +46,7 @@ static void activate(GtkApplication* app, gpointer user_data)
 int main(int argc, char** argv)
 {
     sqlite3* db = 0; // хэндл объекта соединение к БД
-    char* err = 0;
+    char* error = 0;
     // открываем соединение
     if (sqlite3_open("src/database.db", &db)) {
         printf("Ошибка открытия/создания БД: %s\n", sqlite3_errmsg(db));
@@ -54,92 +54,59 @@ int main(int argc, char** argv)
     }
 
     // выполняем SQL
-    else if (sqlite3_exec(db, TODO, 0, 0, &err)) {
-        printf("Ошибка SQL: %s\n", err);
-        sqlite3_free(err);
+    else if (sqlite3_exec(db, TODO, 0, 0, &error)) {
+        printf("Ошибка SQL: %s\n", error);
+        sqlite3_free(error);
         return 0;
     }
-    if (sqlite3_exec(db, CATEGORIES, 0, 0, &err)) {
-        printf("Ошибка SQL: %s\n", err);
-        sqlite3_free(err);
+    if (sqlite3_exec(db, CATEGORIES, 0, 0, &error)) {
+        printf("Ошибка SQL: %s\n", error);
+        sqlite3_free(error);
         return 0;
     }
     if (argc == 2) {
-        char k;
-        int i = 0;
-        if (!strcmp(argv[1], "add")) {
-            char* task = malloc(sizeof(char) * 1000);
-            printf("Введите заметку:\n");
-            while ((k = getchar()) != '\n') {
-                task[i] = k;
-                i++;
-            }
-            task[i] = '\0';
-            printf("string = %s\n", task);
-            int err = add_task(db, task);
-            if (err) {
-                parse_error(err);
-                sqlite3_close(db);
-                return 0;
-            }
-        } else if (!strcmp(argv[1], "delete")) {
-            char* date = malloc(sizeof(char) * 30);
-            printf("Введите Дату для удаления\n");
-            while ((k = getchar()) != '\n') {
-                date[i] = k;
-                i++;
-            }
-            date[24] = '\n';
-            int err = delete_task(db, date);
-            if (err) {
-                parse_error(err);
-                sqlite3_close(db);
-                return 0;
-            }
-        } else if (!strcmp(argv[1], "update")) {
-            char* date = malloc(sizeof(char) * 30);
-            char* task = malloc(sizeof(char) * 1000);
-            printf("Введите дату заметки для исправления\n");
-            while ((k = getchar()) != '\n') {
-                date[i] = k;
-                i++;
-            }
-            date[24] = '\n';
-            printf("Введите исправление\n");
-            i = 0;
-            k = '0';
-            while ((k = getchar()) != '\n') {
-                task[i] = k;
-                i++;
-            }
-            task[i] = '\0';
-            int err = update_task(db, task, date);
-            if (err) {
-                parse_error(err);
-                sqlite3_close(db);
-                return 0;
-            }
-            /*}  else if (!strcmp(argv[1], "addC")) {
-                 char category[1000];
-                 char* c = &category[0];
-                 int i = 0;
-                 char k;
-                 printf("Введите новую категорию: \n");
-                 while ((k = getchar()) != '\n') {
-                     category[i] = k;
-                     i++;
-                 }
-                 category[i] = '\0';
-                 printf("string = %s\n", c);
-                 int uncorrect = add_category(db, category);
-                 if (uncorrect) {
-                     printf("Error\n");
-                     sqlite3_close(db);
-                     return 0;
-                 }
-             */
-        } else if (!strcmp(argv[1], "show")) {
+        Task_data data;
+        data.db = db;
+        /*}  else if (!strcmp(argv[1], "addC")) {
+             char category[1000];
+             char* c = &category[0];
+             int i = 0;
+             char k;
+             printf("Введите новую категорию: \n");
+             while ((k = getchar()) != '\n') {
+                 category[i] = k;
+                 i++;
+             }
+             category[i] = '\0';
+             printf("string = %s\n", c);
+             int uncorrect = add_category(db, category);
+             if (uncorrect) {
+                 printf("Error\n");
+                 sqlite3_close(db);
+                 return 0;
+             }
+         */
+        if (!strcmp(argv[1], "show")) {
             show_task(db);
+        } else if (
+                !strcmp(argv[1], "update") || !strcmp(argv[1], "delete")
+                || !strcmp(argv[1], "add")) {
+            read_data(&data, argv[1]);
+            int err;
+            if (!strcmp(argv[1], "update")) {
+                err = update_task(&data);
+            }
+            if (!strcmp(argv[1], "add")) {
+                err = add_task(&data);
+            }
+            if (!strcmp(argv[1], "delete")) {
+                err = delete_task(&data);
+            }
+            if (err) {
+                parse_error(err);
+                sqlite3_close(db);
+                return 0;
+            }
         } else {
             printf("Usage ./bin/todo {add/delete/update/show}\n");
         }
@@ -153,10 +120,10 @@ int main(int argc, char** argv)
         GtkApplication* app;
         int status;
 
-        app = gtk_application_new("org.gtk.example", G_APPLICATION_FLAGS_NONE);
-        g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
-        status = g_application_run(G_APPLICATION(app), argc, argv);
-        g_object_unref(app);
+        app = gtk_application_new("org.gtk.example",
+    G_APPLICATION_FLAGS_NONE); g_signal_connect(app, "activate",
+    G_CALLBACK(activate), NULL); status =
+    g_application_run(G_APPLICATION(app), argc, argv); g_object_unref(app);
 
     return status;
 
