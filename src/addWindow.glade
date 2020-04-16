@@ -20,7 +20,7 @@
     <property name="pixel_size">55</property>
     <property name="icon_name">emblem-default</property>
   </object>
-  <object class="GtkWindow">
+  <object class="GtkWindow" id="addWindow">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Добавление заметки</property>
     <property name="resizable">False</property>
@@ -35,10 +35,11 @@
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkTextView">
+          <object class="GtkTextView" id="textViewA">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="wrap_mode">word</property>
+            <property name="indent">-1</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -52,7 +53,7 @@
             <property name="can_focus">False</property>
             <property name="homogeneous">True</property>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="categoryButtonA">
                 <property name="label" translatable="yes">Выбрать
 категорию</property>
                 <property name="visible">True</property>
@@ -68,7 +69,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="dateButtonA">
                 <property name="label" translatable="yes">Выбрать
 дату</property>
                 <property name="visible">True</property>
@@ -84,13 +85,14 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="addButtonA">
                 <property name="label" translatable="yes">Готово</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="image">image3</property>
                 <property name="always_show_image">True</property>
+                <signal name="clicked" handler="Add" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>

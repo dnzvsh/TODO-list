@@ -2,26 +2,36 @@
 <!-- Generated with glade 3.22.2 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <object class="GtkImage" id="image1">
+  <object class="GtkImage" id="imageAdd">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixel_size">28</property>
+    <property name="icon_name">add</property>
+  </object>
+  <object class="GtkImage" id="imageCategory">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixel_size">24</property>
+    <property name="icon_name">bookmark</property>
+  </object>
+  <object class="GtkImage" id="imageDate">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixel_size">28</property>
     <property name="icon_name">date</property>
     <property name="icon_size">3</property>
   </object>
-  <object class="GtkImage" id="image2">
+  <object class="GtkImage" id="imageEdit">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixel_size">28</property>
-    <property name="icon_name">add</property>
+    <property name="icon_name">edit-find-replace</property>
   </object>
-  <object class="GtkImage" id="image3">
+  <object class="GtkImage" id="imageEdit1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixel_size">24</property>
-    <property name="icon_name">bookmark</property>
+    <property name="icon_name">edit-find-replace</property>
   </object>
-  <object class="GtkWindow">
+  <object class="GtkWindow" id="mainWindow">
     <property name="width_request">700</property>
     <property name="height_request">700</property>
     <property name="can_focus">False</property>
@@ -29,7 +39,7 @@
     <property name="vexpand">True</property>
     <property name="resizable">False</property>
     <property name="default_width">440</property>
-    <property name="default_height">660</property>
+    <property name="default_height">600</property>
     <child type="titlebar">
       <placeholder/>
     </child>
@@ -74,11 +84,13 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">button</property>
+                  <object class="GtkButton" id="editButton1">
+                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">imageEdit</property>
+                    <property name="always_show_image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -112,11 +124,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">button</property>
+                  <object class="GtkButton" id="editButton2">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">imageEdit1</property>
+                    <property name="always_show_image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -150,11 +163,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">button</property>
+                  <object class="GtkButton" id="editButton3">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">imageEdit2</property>
+                    <property name="always_show_image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -188,11 +202,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">button</property>
+                  <object class="GtkButton" id="editButton4">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">imageEdit3</property>
+                    <property name="always_show_image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -226,11 +241,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">button</property>
+                  <object class="GtkButton" id="editButton5">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">imageEdit4</property>
+                    <property name="always_show_image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -264,11 +280,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">button</property>
+                  <object class="GtkButton" id="editButton6">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">imageEdit5</property>
+                    <property name="always_show_image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -302,11 +319,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">button</property>
+                  <object class="GtkButton" id="editButton7">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">imageEdit6</property>
+                    <property name="always_show_image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -340,11 +358,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">button</property>
+                  <object class="GtkButton" id="editButton8">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">imageEdit7</property>
+                    <property name="always_show_image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -378,11 +397,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">button</property>
+                  <object class="GtkButton" id="editButton9">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">imageEdit8</property>
+                    <property name="always_show_image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -416,11 +436,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">button</property>
+                  <object class="GtkButton" id="editButton10">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">imageEdit9</property>
+                    <property name="always_show_image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -454,11 +475,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">button</property>
+                  <object class="GtkButton" id="editButton11">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">imageEdit10</property>
+                    <property name="always_show_image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -492,11 +514,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">button</property>
+                  <object class="GtkButton" id="editButton12">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">imageEdit11</property>
+                    <property name="always_show_image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -530,11 +553,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">button</property>
+                  <object class="GtkButton" id="editButton13">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">imageEdit12</property>
+                    <property name="always_show_image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -568,11 +592,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">button</property>
+                  <object class="GtkButton" id="editButton14">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">imageEdit13</property>
+                    <property name="always_show_image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -606,11 +631,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">button</property>
+                  <object class="GtkButton" id="editButton15">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">imageEdit14</property>
+                    <property name="always_show_image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -644,11 +670,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">button</property>
+                  <object class="GtkButton" id="editButton16">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">imageEdit15</property>
+                    <property name="always_show_image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -682,11 +709,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">button</property>
+                  <object class="GtkButton" id="editButton17">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">imageEdit16</property>
+                    <property name="always_show_image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -720,11 +748,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">button</property>
+                  <object class="GtkButton" id="editButton18">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">imageEdit17</property>
+                    <property name="always_show_image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -758,11 +787,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">button</property>
+                  <object class="GtkButton" id="editButton19">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">imageEdit18</property>
+                    <property name="always_show_image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -796,11 +826,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">button</property>
+                  <object class="GtkButton" id="editButton20">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="image">imageEdit19</property>
+                    <property name="always_show_image">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -818,8 +849,8 @@
             </child>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -829,12 +860,12 @@
             <property name="can_focus">False</property>
             <property name="column_homogeneous">True</property>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="categoryButtonM">
                 <property name="label" translatable="yes">Категории</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="image">image3</property>
+                <property name="image">imageCategory</property>
                 <property name="always_show_image">True</property>
               </object>
               <packing>
@@ -843,12 +874,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="addButtonM">
                 <property name="label" translatable="yes">Добавить</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="image">image2</property>
+                <property name="image">imageAdd</property>
                 <property name="always_show_image">True</property>
               </object>
               <packing>
@@ -857,12 +888,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="dateButtonM">
                 <property name="label" translatable="yes">Дата</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="image">image1</property>
+                <property name="image">imageDate</property>
                 <property name="always_show_image">True</property>
               </object>
               <packing>
@@ -880,5 +911,95 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkImage" id="imageEdit10">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit11">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit12">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit13">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit14">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit15">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit16">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit17">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit18">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit19">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit3">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit4">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit5">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit6">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit7">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit8">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit9">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
   </object>
 </interface>
