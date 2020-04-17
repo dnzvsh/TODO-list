@@ -49,7 +49,7 @@
             <property name="can_focus">False</property>
             <property name="homogeneous">True</property>
             <child>
-              <object class="GtkButton" id="categoryButtonA">
+              <object class="GtkButton" id="categoryButtonE">
                 <property name="label" translatable="yes">Выбрать
 категорию</property>
                 <property name="visible">True</property>
@@ -65,7 +65,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="addButtonA">
+              <object class="GtkButton" id="addButtonE">
                 <property name="label" translatable="yes">Готово</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
