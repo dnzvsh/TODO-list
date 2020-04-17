@@ -10,6 +10,26 @@ int main(int argc, char** argv)
     GtkButton* addTaskButton;
     GtkWidget* window;
 
+    sqlite3* db = 0; // хэндл объекта соединение к БД
+    char* error = 0;
+    // открываем соединение
+    if (sqlite3_open("src/database.db", &db)) {
+        printf("Ошибка открытия/создания БД: %s\n", sqlite3_errmsg(db));
+        return 0;
+    }
+
+    // выполняем SQL
+    else if (sqlite3_exec(db, TODO, 0, 0, &error)) {
+        printf("Ошибка SQL: %s\n", error);
+        sqlite3_free(error);
+        return 0;
+    }
+    if (sqlite3_exec(db, CATEGORIES, 0, 0, &error)) {
+        printf("Ошибка SQL: %s\n", error);
+        sqlite3_free(error);
+        return 0;
+    }
+    sqlite3_close(db);
     gtk_init(&argc, &argv);
 
     builder = gtk_builder_new();
