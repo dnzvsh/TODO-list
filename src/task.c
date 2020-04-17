@@ -1,8 +1,26 @@
 #include "task.h"
+#include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
+const int itoa_rec(int a, char str[])
+{
+    int i = 0; //индекс для записывания
+    if (a < 0) //ставим 'минус' в начале массива, если число отрицательное
+    {
+        str[0] = '-';
+        i++;
+    }
+    if ((a / 10)) //условие выхода из рекурсии:если число одного элемента
+    {
+        i = itoa_rec(a / 10, str);
+    }
+    str[i++] = abs(a % 10) + '0'; //записываем в массив символов
+    str[i] = '\0';
+    return i;
+}
 
 const int sql_request(Task_data* data)
 {
@@ -24,6 +42,12 @@ const int sql_request(Task_data* data)
     }
     sqlite3_finalize(stmt);
     return 0;
+}
+
+void close_window(GtkWidget* widget, gpointer user_data)
+{
+    GtkWidget* window = user_data;
+    gtk_widget_hide(window);
 }
 
 void read_data(Task_data* data, char* argv)
@@ -51,19 +75,67 @@ void read_data(Task_data* data, char* argv)
     strcpy(data->argv, argv);
 }
 
-int add_task(Task_data* data)
+int open_add_window(GtkWidget* widget, gpointer data)
 {
-    if (!data->task) {
-        return -3;
-    }
-    strcpy(data->sql, "INSERT INTO TODO (Task,Date) VALUES (?,?);");
+    GtkBuilder* builder;
+
+    GtkButton* button;
+
+    builder = gtk_builder_new();
+    gtk_builder_add_from_file(builder, "src/addWindow.glade", NULL);
+    button = GTK_BUTTON(gtk_builder_get_object(builder, "addButtonA"));
+
+    g_signal_connect(
+            G_OBJECT(button), "clicked", G_CALLBACK(add_task), builder);
+    g_signal_connect(
+            G_OBJECT(button), "clicked", G_CALLBACK(show_task_on_add), data);
+    GtkWidget* window
+            = GTK_WIDGET(gtk_builder_get_object(builder, "addWindow"));
+    g_signal_connect(
+            G_OBJECT(button), "clicked", G_CALLBACK(close_window), window);
+    g_signal_connect(
+            G_OBJECT(window), "destroy", G_CALLBACK(gtk_widget_hide), NULL);
+    gtk_widget_show(window);
+    return 0;
+}
+
+void show_task_on_add(GtkWidget* widget, gpointer data)
+{
+    GtkBuilder* builder = data;
+    show_task(builder);
+}
+
+int add_task(GtkWidget* widget, gpointer user_data)
+{
+    Task_data data;
+    sqlite3_open(DATABASE_PATH, &data.db);
+    GtkBuilder* builder = user_data;
+    GtkTextBuffer* buffer;
+
+    GtkTextIter start;
+    GtkTextIter end;
+    char* text;
+    buffer = gtk_text_view_get_buffer(
+            GTK_TEXT_VIEW((gtk_builder_get_object(builder, "textViewA"))));
+    gtk_text_buffer_get_start_iter(buffer, &start);
+    gtk_text_buffer_get_end_iter(buffer, &end);
+
+    text = (char*)gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
+    g_print("%s\n", text);
+    strcpy(data.task, text);
+    strcpy(data.sql, "INSERT INTO TODO (Task,Date) VALUES (?,?);");
     const time_t sec = time(NULL);
     char* t = ctime(&sec);
-    strcpy(data->date, t);
-    int err = sql_request(data);
+    strcpy(data.date, t);
+    if (!data.task) {
+        return -3;
+    }
+    int err = sql_request(&data);
     if (err) {
+        g_print("%zd\n", strlen(text));
         return -2;
     }
+    // gtk_widget_hide();
     return 0;
 }
 
@@ -110,29 +182,31 @@ int add_category(sqlite3* db, char* category_name)
     return 0;
 }
 */
-void show_task(sqlite3* db)
+int show_task(GtkBuilder* builder)
 {
+    sqlite3* db;
+    int r = sqlite3_open(DATABASE_PATH, &db);
+    if (r) {
+        return -7;
+    }
     sqlite3_stmt* stmt;
-    sqlite3_prepare_v2(db, "select * from TODO;", -1, &stmt, NULL);
+    int j = 1;
+    sqlite3_prepare_v2(db, "select (Task) from TODO;", -1, &stmt, NULL);
     while (sqlite3_step(stmt) != SQLITE_DONE) {
         int i;
         int num_cols = sqlite3_column_count(stmt);
         for (i = 0; i < num_cols; i++) {
-            switch (sqlite3_column_type(stmt, i)) {
-            case (SQLITE3_TEXT):
-                printf("%s ", sqlite3_column_text(stmt, i));
-                break;
-            case (SQLITE_INTEGER):
-                printf("%d ", sqlite3_column_int(stmt, i));
-                break;
-            default:
-                break;
-            }
+            char tmp[9] = "labelM";
+            char t[3];
+            itoa_rec(j, t);
+            strcat(tmp, t);
+            GtkLabel* label = GTK_LABEL(gtk_builder_get_object(builder, tmp));
+            gtk_label_set_text(label, (char*)sqlite3_column_text(stmt, i));
         }
-        printf("\n");
+        j++;
     }
-
     sqlite3_finalize(stmt);
+    return 0;
 }
 
 void parse_error(int err)
@@ -150,5 +224,7 @@ void parse_error(int err)
         printf("Обновление на пустое задание!\n");
     case -6:
         printf("Ошибка при обновлении задания!\n");
+    case -7:
+        printf("Ошибка открытия бд\n");
     }
 }
