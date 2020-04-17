@@ -161,7 +161,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="label1M">
+                  <object class="GtkLabel" id="labelM1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -198,7 +198,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="label1M10">
+                  <object class="GtkLabel" id="labelM2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -235,7 +235,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="label1M11">
+                  <object class="GtkLabel" id="labelM3">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -272,7 +272,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="label1M12">
+                  <object class="GtkLabel" id="labelM4">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -309,7 +309,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="label1M13">
+                  <object class="GtkLabel" id="labelM5">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -346,7 +346,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="label1M14">
+                  <object class="GtkLabel" id="labelM6">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -383,7 +383,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="label1M15">
+                  <object class="GtkLabel" id="labelM7">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -420,7 +420,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="label1M16">
+                  <object class="GtkLabel" id="labelM8">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -457,7 +457,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="label1M17">
+                  <object class="GtkLabel" id="labelM9">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -494,7 +494,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="label1M18">
+                  <object class="GtkLabel" id="labelM10">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -531,7 +531,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="label1M19">
+                  <object class="GtkLabel" id="labelM11">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -568,7 +568,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="label1M20">
+                  <object class="GtkLabel" id="labelM12">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -605,7 +605,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="label1M21">
+                  <object class="GtkLabel" id="labelM13">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -642,7 +642,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="label1M22">
+                  <object class="GtkLabel" id="labelM14">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -679,7 +679,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="label1M23">
+                  <object class="GtkLabel" id="labelM15">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -716,7 +716,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="label1M24">
+                  <object class="GtkLabel" id="labelM16">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -753,7 +753,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="label1M25">
+                  <object class="GtkLabel" id="labelM17">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -790,7 +790,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="label1M26">
+                  <object class="GtkLabel" id="labelM18">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -827,7 +827,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="label1M27">
+                  <object class="GtkLabel" id="labelM19">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -864,7 +864,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel" id="label1M28">
+                  <object class="GtkLabel" id="labelM20">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
