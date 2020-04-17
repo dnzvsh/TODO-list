@@ -31,6 +31,96 @@
     <property name="can_focus">False</property>
     <property name="icon_name">edit-find-replace</property>
   </object>
+  <object class="GtkImage" id="imageEdit10">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit11">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit12">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit13">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit14">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit15">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit16">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit17">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit18">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit19">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit3">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit4">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit5">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit6">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit7">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit8">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
+  <object class="GtkImage" id="imageEdit9">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-find-replace</property>
+  </object>
   <object class="GtkWindow" id="mainWindow">
     <property name="width_request">700</property>
     <property name="height_request">700</property>
@@ -71,11 +161,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel" id="label1M">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="justification">fill</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -85,7 +173,6 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="editButton1">
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -111,11 +198,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel" id="label1M10">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="justification">fill</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -150,11 +235,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel" id="label1M11">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="justification">fill</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -189,11 +272,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel" id="label1M12">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="justification">fill</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -228,11 +309,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel" id="label1M13">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="justification">fill</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -267,11 +346,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel" id="label1M14">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="justification">fill</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -306,11 +383,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel" id="label1M15">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="justification">fill</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -345,11 +420,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel" id="label1M16">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="justification">fill</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -384,11 +457,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel" id="label1M17">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="justification">fill</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -423,11 +494,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel" id="label1M18">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="justification">fill</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -462,11 +531,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel" id="label1M19">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="justification">fill</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -501,11 +568,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel" id="label1M20">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="justification">fill</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -540,11 +605,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel" id="label1M21">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="justification">fill</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -579,11 +642,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel" id="label1M22">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="justification">fill</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -618,11 +679,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel" id="label1M23">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="justification">fill</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -657,11 +716,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel" id="label1M24">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="justification">fill</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -696,11 +753,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel" id="label1M25">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="justification">fill</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -735,11 +790,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel" id="label1M26">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="justification">fill</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -774,11 +827,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel" id="label1M27">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="justification">fill</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -813,11 +864,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkLabel" id="label1M28">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="justification">fill</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -911,95 +960,5 @@
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkImage" id="imageEdit10">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">edit-find-replace</property>
-  </object>
-  <object class="GtkImage" id="imageEdit11">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">edit-find-replace</property>
-  </object>
-  <object class="GtkImage" id="imageEdit12">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">edit-find-replace</property>
-  </object>
-  <object class="GtkImage" id="imageEdit13">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">edit-find-replace</property>
-  </object>
-  <object class="GtkImage" id="imageEdit14">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">edit-find-replace</property>
-  </object>
-  <object class="GtkImage" id="imageEdit15">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">edit-find-replace</property>
-  </object>
-  <object class="GtkImage" id="imageEdit16">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">edit-find-replace</property>
-  </object>
-  <object class="GtkImage" id="imageEdit17">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">edit-find-replace</property>
-  </object>
-  <object class="GtkImage" id="imageEdit18">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">edit-find-replace</property>
-  </object>
-  <object class="GtkImage" id="imageEdit19">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">edit-find-replace</property>
-  </object>
-  <object class="GtkImage" id="imageEdit2">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">edit-find-replace</property>
-  </object>
-  <object class="GtkImage" id="imageEdit3">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">edit-find-replace</property>
-  </object>
-  <object class="GtkImage" id="imageEdit4">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">edit-find-replace</property>
-  </object>
-  <object class="GtkImage" id="imageEdit5">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">edit-find-replace</property>
-  </object>
-  <object class="GtkImage" id="imageEdit6">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">edit-find-replace</property>
-  </object>
-  <object class="GtkImage" id="imageEdit7">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">edit-find-replace</property>
-  </object>
-  <object class="GtkImage" id="imageEdit8">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">edit-find-replace</property>
-  </object>
-  <object class="GtkImage" id="imageEdit9">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">edit-find-replace</property>
   </object>
 </interface>
