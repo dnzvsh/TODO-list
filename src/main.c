@@ -29,15 +29,18 @@ int main(int argc, char** argv)
         sqlite3_free(error);
         return 0;
     }
-    sqlite3_close(db);
+
     gtk_init(&argc, &argv);
 
     builder = gtk_builder_new();
     gtk_builder_add_from_file(builder, "src/mainWindow.glade", NULL);
-
     addTaskButton = GTK_BUTTON(gtk_builder_get_object(builder, "addButtonM"));
     window = GTK_WIDGET(gtk_builder_get_object(builder, "mainWindow"));
-    show_task(builder);
+
+    Task_data d;
+    d.db = db;
+    d.builder = builder;
+    show_task(&d);
 
     g_signal_connect(
             G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
@@ -45,10 +48,48 @@ int main(int argc, char** argv)
             G_OBJECT(addTaskButton),
             "clicked",
             G_CALLBACK(open_add_window),
-            builder);
-    gtk_widget_show(window);
+            &d);
+    Task_data i[20];
 
+    for (int j = 0; j < 20; j++) {
+        i[j].db = db;
+        i[j].builder = builder;
+        GtkLabel l_main;
+        GtkLabel l_date;
+        GtkButton* button_edit;
+        char tm[14] = "editButton";
+        char t[3];
+        itoa_rec(j + 1, t);
+        strcat(tm, t);
+        button_edit = GTK_BUTTON(gtk_builder_get_object(i->builder, tm));
+        GtkLabel* label_main = &l_main;
+        GtkLabel* label_date = &l_date;
+        i[j].index = j + 1;
+        read_rows(label_main, label_date, i[j].index, &i[j]);
+        i[j].rc = g_signal_connect(
+                button_edit, "clicked", G_CALLBACK(open_view_window), &i[j]);
+    }
+    /*
+    sqlite3_prepare_v2(db, "select Task,Date from TODO;", -1, &stmt, NULL);
+    while (sqlite3_step(stmt) != SQLITE_DONE) {
+        i[j].db = db;
+
+        i[j].builder = builder;
+        strcpy(i[j].task, (char*)sqlite3_column_text(stmt, 0));
+        strcpy(i[j].date, (char*)sqlite3_column_text(stmt, 1));
+
+        char tmp[14] = "editButton";
+        char t[3];
+        itoa_rec(j + 1, t);
+        strcat(tmp, t);
+        button_edit[j] = GTK_BUTTON(gtk_builder_get_object(builder, tmp));
+        g_signal_connect(
+                button_edit[j], "clicked", G_CALLBACK(open_view_window), &i[j]);
+        j++;
+    }*/
+    gtk_widget_show(window);
     gtk_main();
+    sqlite3_close(db);
     /*
     sqlite3* db = 0; // хэндл объекта соединение к БД
     char* error = 0;

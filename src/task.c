@@ -49,7 +49,7 @@ void close_window(GtkWidget* widget, gpointer user_data)
     GtkWidget* window = user_data;
     gtk_widget_hide(window);
 }
-
+/*
 void read_data(Task_data* data, char* argv)
 {
     int i = 0;
@@ -74,9 +74,16 @@ void read_data(Task_data* data, char* argv)
     }
     strcpy(data->argv, argv);
 }
-
-int open_add_window(GtkWidget* widget, gpointer data)
+*/
+void show_task_on_add(GtkWidget* widget, gpointer user_data)
 {
+    Task_data* data = user_data;
+    show_task(data);
+}
+
+int open_add_window(GtkWidget* widget, gpointer user_data)
+{
+    Task_data* data = (Task_data*)user_data;
     GtkBuilder* builder;
 
     GtkButton* button;
@@ -99,12 +106,6 @@ int open_add_window(GtkWidget* widget, gpointer data)
     return 0;
 }
 
-void show_task_on_add(GtkWidget* widget, gpointer data)
-{
-    GtkBuilder* builder = data;
-    show_task(builder);
-}
-
 int add_task(GtkWidget* widget, gpointer user_data)
 {
     Task_data data;
@@ -121,7 +122,6 @@ int add_task(GtkWidget* widget, gpointer user_data)
     gtk_text_buffer_get_end_iter(buffer, &end);
 
     text = (char*)gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
-    g_print("%s\n", text);
     strcpy(data.task, text);
     strcpy(data.sql, "INSERT INTO TODO (Task,Date) VALUES (?,?);");
     const time_t sec = time(NULL);
@@ -132,16 +132,16 @@ int add_task(GtkWidget* widget, gpointer user_data)
     }
     int err = sql_request(&data);
     if (err) {
-        g_print("%zd\n", strlen(text));
         return -2;
     }
     // gtk_widget_hide();
     return 0;
 }
 
-int delete_task(Task_data* data)
+int delete_task(GtkWidget* widget, gpointer user_data)
 {
-    printf("%s\n", data->date);
+    Task_data* data = (Task_data*)user_data;
+    strcpy(data->argv, "delete");
     strcpy(data->sql, "DELETE FROM TODO WHERE Date = ?;");
     int err = sql_request(data);
     if (err) {
@@ -182,30 +182,109 @@ int add_category(sqlite3* db, char* category_name)
     return 0;
 }
 */
-int show_task(GtkBuilder* builder)
+void filling_label(Task_data* data, int id, char* task, char* label_type)
 {
-    sqlite3* db;
-    int r = sqlite3_open(DATABASE_PATH, &db);
-    if (r) {
-        return -7;
-    }
+    char tmp[3];
+    itoa_rec(id + 1, tmp);
+    strcat(label_type, tmp);
+    GtkLabel* label
+            = GTK_LABEL(gtk_builder_get_object(data->builder, label_type));
+    gtk_label_set_text(label, task);
+}
+
+int show_task(Task_data* data)
+{
     sqlite3_stmt* stmt;
-    int j = 1;
-    sqlite3_prepare_v2(db, "select (Task) from TODO;", -1, &stmt, NULL);
+    int j = 0;
+    sqlite3_prepare_v2(
+            data->db, "select Task,Date from TODO;", -1, &stmt, NULL);
     while (sqlite3_step(stmt) != SQLITE_DONE) {
-        int i;
-        int num_cols = sqlite3_column_count(stmt);
-        for (i = 0; i < num_cols; i++) {
-            char tmp[9] = "labelM";
-            char t[3];
-            itoa_rec(j, t);
-            strcat(tmp, t);
-            GtkLabel* label = GTK_LABEL(gtk_builder_get_object(builder, tmp));
-            gtk_label_set_text(label, (char*)sqlite3_column_text(stmt, i));
-        }
+        char label_main[15] = "labelM";
+        char label_date[12] = "labelTime";
+        filling_label(data, j, (char*)sqlite3_column_text(stmt, 0), label_main);
+        filling_label(data, j, (char*)sqlite3_column_text(stmt, 1), label_date);
         j++;
     }
+    char label_date[12] = "labelTime";
+    char label_main[15] = "labelM";
+    filling_label(data, j, " ", label_main);
+    filling_label(data, j, " ", label_date);
     sqlite3_finalize(stmt);
+    return 0;
+}
+
+void read_rows(
+        GtkLabel* label_main, GtkLabel* label_date, int num, Task_data* i)
+{
+    char label_name[15] = "labelM";
+    char tmp[3];
+    itoa_rec(num, tmp);
+    strcat(label_name, tmp);
+    label_main = GTK_LABEL(gtk_builder_get_object(i->builder, label_name));
+    strcpy(i->task, (char*)gtk_label_get_text(label_main));
+
+    strcpy(label_name, "labelTime");
+    strcat(label_name, tmp);
+    label_date = GTK_LABEL(gtk_builder_get_object(i->builder, label_name));
+    strcpy(i->date, (char*)gtk_label_get_text(label_date));
+}
+
+void initialize_edit_button(GtkWidget* widget, gpointer user_data)
+{
+    Task_data* i = (Task_data*)user_data;
+    GtkButton* button_edit;
+    char tm[14] = "editButton";
+    char t[3];
+    itoa_rec(i->index, t);
+    strcat(tm, t);
+    button_edit = GTK_BUTTON(gtk_builder_get_object(i->builder, tm));
+    GtkLabel label_main;
+    GtkLabel label_date;
+    read_rows(&label_main, &label_date, i->index, i);
+    if (i->rc != 0) {
+        g_signal_handler_disconnect(button_edit, i->rc);
+    }
+    i->rc = g_signal_connect(
+            button_edit, "clicked", G_CALLBACK(open_view_window), i);
+}
+
+int open_view_window(GtkWidget* widget, gpointer user_data)
+{
+    Task_data* data = (Task_data*)user_data;
+    GtkBuilder* builder;
+    builder = gtk_builder_new();
+    gtk_builder_add_from_file(builder, "src/viewWindow.glade", NULL);
+    GtkWidget* window
+            = GTK_WIDGET(gtk_builder_get_object(builder, "viewWindow"));
+    g_signal_connect(
+            G_OBJECT(window), "destroy", G_CALLBACK(gtk_widget_hide), window);
+
+    GtkButton* delete_button
+            = GTK_BUTTON(gtk_builder_get_object(builder, "addButtonV"));
+    g_signal_connect(
+            G_OBJECT(delete_button),
+            "clicked",
+            G_CALLBACK(initialize_edit_button),
+            data);
+    g_signal_connect(
+            G_OBJECT(delete_button), "clicked", G_CALLBACK(delete_task), data);
+    g_signal_connect(
+            G_OBJECT(delete_button),
+            "clicked",
+            G_CALLBACK(show_task_on_add),
+            data);
+
+    g_signal_connect(
+            G_OBJECT(delete_button),
+            "clicked",
+            G_CALLBACK(close_window),
+            window);
+
+    // GtkButton* edit_button
+    //        = GTK_BUTTON(gtk_builder_get_object(builder, "editButtonV"));
+
+    gtk_widget_show(window);
+
     return 0;
 }
 
