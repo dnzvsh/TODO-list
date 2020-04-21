@@ -22,6 +22,19 @@ const int itoa_rec(int a, char str[])
     return i;
 }
 
+void read_buffer(GtkBuilder* builder, char* text_id, char* text)
+{
+    GtkTextBuffer* buffer;
+    GtkTextIter start;
+    GtkTextIter end;
+    buffer = gtk_text_view_get_buffer(
+            GTK_TEXT_VIEW((gtk_builder_get_object(builder, text_id))));
+    gtk_text_buffer_get_start_iter(buffer, &start);
+    gtk_text_buffer_get_end_iter(buffer, &end);
+
+    strcpy(text, (char*)gtk_text_buffer_get_text(buffer, &start, &end, FALSE));
+}
+
 const int sql_request(Task_data* data)
 {
     sqlite3_stmt* stmt;
@@ -90,10 +103,10 @@ int open_add_window(GtkWidget* widget, gpointer user_data)
 
     builder = gtk_builder_new();
     gtk_builder_add_from_file(builder, "src/addWindow.glade", NULL);
+    data->builder_window = builder;
     button = GTK_BUTTON(gtk_builder_get_object(builder, "addButtonA"));
 
-    g_signal_connect(
-            G_OBJECT(button), "clicked", G_CALLBACK(add_task), builder);
+    g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(add_task), data);
     g_signal_connect(
             G_OBJECT(button), "clicked", G_CALLBACK(show_task_on_add), data);
     GtkWidget* window
@@ -108,29 +121,16 @@ int open_add_window(GtkWidget* widget, gpointer user_data)
 
 int add_task(GtkWidget* widget, gpointer user_data)
 {
-    Task_data data;
-    sqlite3_open(DATABASE_PATH, &data.db);
-    GtkBuilder* builder = user_data;
-    GtkTextBuffer* buffer;
-
-    GtkTextIter start;
-    GtkTextIter end;
-    char* text;
-    buffer = gtk_text_view_get_buffer(
-            GTK_TEXT_VIEW((gtk_builder_get_object(builder, "textViewA"))));
-    gtk_text_buffer_get_start_iter(buffer, &start);
-    gtk_text_buffer_get_end_iter(buffer, &end);
-
-    text = (char*)gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
-    strcpy(data.task, text);
-    strcpy(data.sql, "INSERT INTO TODO (Task,Date) VALUES (?,?);");
+    Task_data* data = (Task_data*)user_data;
+    read_buffer(data->builder_window, "textViewA", data->task);
+    strcpy(data->sql, "INSERT INTO TODO (Task,Date) VALUES (?,?);");
     const time_t sec = time(NULL);
     char* t = ctime(&sec);
-    strcpy(data.date, t);
-    if (!data.task) {
+    strcpy(data->date, t);
+    if (!data->task) {
         return -3;
     }
-    int err = sql_request(&data);
+    int err = sql_request(data);
     if (err) {
         return -2;
     }
@@ -150,14 +150,18 @@ int delete_task(GtkWidget* widget, gpointer user_data)
     return 0;
 }
 
-int update_task(Task_data* data)
+int update_task(GtkWidget* widget, gpointer user_data)
 {
+    Task_data* data = (Task_data*)user_data;
+    read_buffer(data->builder_window, "textViewV", data->task);
+    strcpy(data->argv, "update");
     if (!data->task) {
         return -5;
     }
     strcpy(data->sql, "UPDATE TODO SET Task = ? WHERE Date = ?;");
     int err = sql_request(data);
     if (err) {
+        g_print("error\n");
         return -6;
     }
     return 0;
@@ -213,7 +217,7 @@ int show_task(Task_data* data)
     return 0;
 }
 
-void read_rows(
+void read_labels(
         GtkLabel* label_main, GtkLabel* label_date, int num, Task_data* i)
 {
     char label_name[15] = "labelM";
@@ -240,12 +244,23 @@ void initialize_edit_button(GtkWidget* widget, gpointer user_data)
     button_edit = GTK_BUTTON(gtk_builder_get_object(i->builder, tm));
     GtkLabel label_main;
     GtkLabel label_date;
-    read_rows(&label_main, &label_date, i->index, i);
+    read_labels(&label_main, &label_date, i->index, i);
     if (i->rc != 0) {
         g_signal_handler_disconnect(button_edit, i->rc);
     }
     i->rc = g_signal_connect(
             button_edit, "clicked", G_CALLBACK(open_view_window), i);
+}
+
+void initialize_buffer_view(GtkBuilder* builder, Task_data* data)
+{
+    GtkTextBuffer* buffer;
+    buffer = gtk_text_view_get_buffer(
+            GTK_TEXT_VIEW(gtk_builder_get_object(builder, "textViewV")));
+    GtkLabel label_main;
+    GtkLabel label_date;
+    read_labels(&label_main, &label_date, data->index, data);
+    gtk_text_buffer_set_text(buffer, data->task, -1);
 }
 
 int open_view_window(GtkWidget* widget, gpointer user_data)
@@ -254,11 +269,12 @@ int open_view_window(GtkWidget* widget, gpointer user_data)
     GtkBuilder* builder;
     builder = gtk_builder_new();
     gtk_builder_add_from_file(builder, "src/viewWindow.glade", NULL);
+    data->builder_window = builder;
+    initialize_buffer_view(builder, data);
     GtkWidget* window
             = GTK_WIDGET(gtk_builder_get_object(builder, "viewWindow"));
     g_signal_connect(
             G_OBJECT(window), "destroy", G_CALLBACK(gtk_widget_hide), window);
-
     GtkButton* delete_button
             = GTK_BUTTON(gtk_builder_get_object(builder, "addButtonV"));
     g_signal_connect(
@@ -273,18 +289,28 @@ int open_view_window(GtkWidget* widget, gpointer user_data)
             "clicked",
             G_CALLBACK(show_task_on_add),
             data);
-
     g_signal_connect(
             G_OBJECT(delete_button),
             "clicked",
             G_CALLBACK(close_window),
             window);
-
-    // GtkButton* edit_button
-    //        = GTK_BUTTON(gtk_builder_get_object(builder, "editButtonV"));
-
+    GtkButton* edit_button
+            = GTK_BUTTON(gtk_builder_get_object(builder, "editButtonV"));
+    g_signal_connect(
+            G_OBJECT(edit_button),
+            "clicked",
+            G_CALLBACK(initialize_edit_button),
+            data);
+    g_signal_connect(
+            G_OBJECT(edit_button), "clicked", G_CALLBACK(update_task), data);
+    g_signal_connect(
+            G_OBJECT(edit_button),
+            "clicked",
+            G_CALLBACK(show_task_on_add),
+            data);
+    g_signal_connect(
+            G_OBJECT(edit_button), "clicked", G_CALLBACK(close_window), window);
     gtk_widget_show(window);
-
     return 0;
 }
 

@@ -65,7 +65,7 @@ int main(int argc, char** argv)
         GtkLabel* label_main = &l_main;
         GtkLabel* label_date = &l_date;
         i[j].index = j + 1;
-        read_rows(label_main, label_date, i[j].index, &i[j]);
+        read_labels(label_main, label_date, i[j].index, &i[j]);
         i[j].rc = g_signal_connect(
                 button_edit, "clicked", G_CALLBACK(open_view_window), &i[j]);
     }

@@ -22,9 +22,10 @@ typedef struct {
     GtkBuilder* builder;
     int rc;
     int index;
+    GtkBuilder* builder_window;
 } Task_data;
 
-void read_rows(
+void read_labels(
         GtkLabel* label_main, GtkLabel* label_date, int num, Task_data* i);
 
 void initialize_edit_button(GtkWidget* widget, gpointer user_data);
@@ -43,7 +44,7 @@ int open_add_window(GtkWidget* widget, gpointer data);
 
 int delete_task(GtkWidget* widget, gpointer user_data);
 
-int update_task(Task_data* data);
+int update_task(GtkWidget* widget, gpointer user_data);
 
 int add_category(sqlite3* db, char* category_name);
 
