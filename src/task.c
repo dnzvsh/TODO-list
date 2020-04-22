@@ -127,7 +127,7 @@ int add_task(GtkWidget* widget, gpointer user_data)
     const time_t sec = time(NULL);
     char* t = ctime(&sec);
     strcpy(data->date, t);
-    if (!data->task) {
+    if (data->task[0] == 0) {
         return -3;
     }
     int err = sql_request(data);
