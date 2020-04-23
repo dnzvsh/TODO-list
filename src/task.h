@@ -34,7 +34,7 @@ int open_view_window(GtkWidget* widget, gpointer data);
 
 // void read_data(Task_data* data, char* argv);
 
-const int itoa_rec(int a, char str[]);
+int itoa_rec(int a, char str[]);
 
 void parse_error(int err);
 

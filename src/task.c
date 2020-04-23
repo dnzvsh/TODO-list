@@ -5,7 +5,7 @@
 #include <string.h>
 #include <time.h>
 
-const int itoa_rec(int a, char str[])
+int itoa_rec(int a, char str[])
 {
     int i = 0; //индекс для записывания
     if (a < 0) //ставим 'минус' в начале массива, если число отрицательное
@@ -35,7 +35,7 @@ void read_buffer(GtkBuilder* builder, char* text_id, char* text)
     strcpy(text, (char*)gtk_text_buffer_get_text(buffer, &start, &end, FALSE));
 }
 
-const int sql_request(Task_data* data)
+int sql_request(Task_data* data)
 {
     sqlite3_stmt* stmt;
     int i = 1;
@@ -319,17 +319,24 @@ void parse_error(int err)
     switch (err) {
     case -1:
         printf("Ошибка в запросе\n");
+	break;
     case -2:
         printf("Ошибка при добавлении задания\n");
+	break;
     case -3:
         printf("Добавление пустого задания!\n");
+	break;
     case -4:
         printf("Ошибка при удалении задания\n");
+	break;
     case -5:
         printf("Обновление на пустое задание!\n");
+	break;
     case -6:
         printf("Ошибка при обновлении задания!\n");
+	break;
     case -7:
         printf("Ошибка открытия бд\n");
+	break;
     }
 }
