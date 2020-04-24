@@ -42,6 +42,7 @@ int sql_request(Task_data* data)
 
 void close_window(GtkWidget* widget, gpointer user_data)
 {
+    (void)widget;
     GtkWidget* window = user_data;
     gtk_widget_hide(window);
 }
@@ -73,12 +74,14 @@ void read_data(Task_data* data, char* argv)
 */
 void show_task_on_add(GtkWidget* widget, gpointer user_data)
 {
+    (void)widget;
     Task_data* data = user_data;
     show_task(data);
 }
 
 int open_add_window(GtkWidget* widget, gpointer user_data)
 {
+    (void)widget;
     Task_data* data = (Task_data*)user_data;
     GtkBuilder* builder;
 
@@ -123,6 +126,7 @@ int add_task(Task_data* data)
 
 void add_task_click(GtkWidget* widget, gpointer user_data)
 {
+    (void)widget;
     Task_data* data = (Task_data*)user_data;
     add_task(data);
 }
@@ -140,6 +144,7 @@ int delete_task(Task_data* data)
 
 void delete_task_click(GtkWidget* widget, gpointer user_data)
 {
+    (void)widget;
     Task_data* data = (Task_data*)user_data;
     delete_task(data);
 }
@@ -162,6 +167,7 @@ int update_task(Task_data* data)
 
 void update_task_click(GtkWidget* widget, gpointer user_data)
 {
+    (void)widget;
     Task_data* data = (Task_data*)user_data;
     update_task(data);
 }
@@ -235,6 +241,7 @@ void read_labels(
 
 void initialize_edit_button(GtkWidget* widget, gpointer user_data)
 {
+    (void)widget;
     Task_data* i = (Task_data*)user_data;
     GtkButton* button_edit;
     char tm[14] = "editButton";
@@ -265,6 +272,7 @@ void initialize_buffer_view(GtkBuilder* builder, Task_data* data)
 
 int open_view_window(GtkWidget* widget, gpointer user_data)
 {
+    (void)widget;
     Task_data* data = (Task_data*)user_data;
     GtkBuilder* builder;
     builder = gtk_builder_new();
