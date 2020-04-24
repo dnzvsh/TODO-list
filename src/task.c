@@ -5,23 +5,6 @@
 #include <string.h>
 #include <time.h>
 
-int itoa_rec(int a, char str[])
-{
-    int i = 0; //индекс для записывания
-    if (a < 0) //ставим 'минус' в начале массива, если число отрицательное
-    {
-        str[0] = '-';
-        i++;
-    }
-    if ((a / 10)) //условие выхода из рекурсии:если число одного элемента
-    {
-        i = itoa_rec(a / 10, str);
-    }
-    str[i++] = abs(a % 10) + '0'; //записываем в массив символов
-    str[i] = '\0';
-    return i;
-}
-
 void read_buffer(GtkBuilder* builder, char* text_id, char* text)
 {
     GtkTextBuffer* buffer;
@@ -106,7 +89,8 @@ int open_add_window(GtkWidget* widget, gpointer user_data)
     data->builder_window = builder;
     button = GTK_BUTTON(gtk_builder_get_object(builder, "addButtonA"));
 
-    g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(add_task), data);
+    g_signal_connect(
+            G_OBJECT(button), "clicked", G_CALLBACK(add_task_click), data);
     g_signal_connect(
             G_OBJECT(button), "clicked", G_CALLBACK(show_task_on_add), data);
     GtkWidget* window
@@ -119,9 +103,8 @@ int open_add_window(GtkWidget* widget, gpointer user_data)
     return 0;
 }
 
-int add_task(GtkWidget* widget, gpointer user_data)
+int add_task(Task_data* data)
 {
-    Task_data* data = (Task_data*)user_data;
     read_buffer(data->builder_window, "textViewA", data->task);
     strcpy(data->sql, "INSERT INTO TODO (Task,Date) VALUES (?,?);");
     const time_t sec = time(NULL);
@@ -138,9 +121,14 @@ int add_task(GtkWidget* widget, gpointer user_data)
     return 0;
 }
 
-int delete_task(GtkWidget* widget, gpointer user_data)
+void add_task_click(GtkWidget* widget, gpointer user_data)
 {
     Task_data* data = (Task_data*)user_data;
+    add_task(data);
+}
+
+int delete_task(Task_data* data)
+{
     strcpy(data->argv, "delete");
     strcpy(data->sql, "DELETE FROM TODO WHERE Date = ?;");
     int err = sql_request(data);
@@ -150,9 +138,14 @@ int delete_task(GtkWidget* widget, gpointer user_data)
     return 0;
 }
 
-int update_task(GtkWidget* widget, gpointer user_data)
+void delete_task_click(GtkWidget* widget, gpointer user_data)
 {
     Task_data* data = (Task_data*)user_data;
+    delete_task(data);
+}
+
+int update_task(Task_data* data)
+{
     read_buffer(data->builder_window, "textViewV", data->task);
     strcpy(data->argv, "update");
     if (!data->task) {
@@ -166,6 +159,13 @@ int update_task(GtkWidget* widget, gpointer user_data)
     }
     return 0;
 }
+
+void update_task_click(GtkWidget* widget, gpointer user_data)
+{
+    Task_data* data = (Task_data*)user_data;
+    update_task(data);
+}
+
 /*
 int add_category(sqlite3* db, char* category_name)
 {
@@ -189,7 +189,7 @@ int add_category(sqlite3* db, char* category_name)
 void filling_label(Task_data* data, int id, char* task, char* label_type)
 {
     char tmp[3];
-    itoa_rec(id + 1, tmp);
+    snprintf(tmp, 3, "%d", id + 1);
     strcat(label_type, tmp);
     GtkLabel* label
             = GTK_LABEL(gtk_builder_get_object(data->builder, label_type));
@@ -222,7 +222,7 @@ void read_labels(
 {
     char label_name[15] = "labelM";
     char tmp[3];
-    itoa_rec(num, tmp);
+    snprintf(tmp, 3, "%d", num);
     strcat(label_name, tmp);
     label_main = GTK_LABEL(gtk_builder_get_object(i->builder, label_name));
     strcpy(i->task, (char*)gtk_label_get_text(label_main));
@@ -239,7 +239,7 @@ void initialize_edit_button(GtkWidget* widget, gpointer user_data)
     GtkButton* button_edit;
     char tm[14] = "editButton";
     char t[3];
-    itoa_rec(i->index, t);
+    snprintf(t, 3, "%d", i->index);
     strcat(tm, t);
     button_edit = GTK_BUTTON(gtk_builder_get_object(i->builder, tm));
     GtkLabel label_main;
@@ -283,7 +283,10 @@ int open_view_window(GtkWidget* widget, gpointer user_data)
             G_CALLBACK(initialize_edit_button),
             data);
     g_signal_connect(
-            G_OBJECT(delete_button), "clicked", G_CALLBACK(delete_task), data);
+            G_OBJECT(delete_button),
+            "clicked",
+            G_CALLBACK(delete_task_click),
+            data);
     g_signal_connect(
             G_OBJECT(delete_button),
             "clicked",
@@ -302,7 +305,10 @@ int open_view_window(GtkWidget* widget, gpointer user_data)
             G_CALLBACK(initialize_edit_button),
             data);
     g_signal_connect(
-            G_OBJECT(edit_button), "clicked", G_CALLBACK(update_task), data);
+            G_OBJECT(edit_button),
+            "clicked",
+            G_CALLBACK(update_task_click),
+            data);
     g_signal_connect(
             G_OBJECT(edit_button),
             "clicked",
@@ -319,24 +325,24 @@ void parse_error(int err)
     switch (err) {
     case -1:
         printf("Ошибка в запросе\n");
-	break;
+        break;
     case -2:
         printf("Ошибка при добавлении задания\n");
-	break;
+        break;
     case -3:
         printf("Добавление пустого задания!\n");
-	break;
+        break;
     case -4:
         printf("Ошибка при удалении задания\n");
-	break;
+        break;
     case -5:
         printf("Обновление на пустое задание!\n");
-	break;
+        break;
     case -6:
         printf("Ошибка при обновлении задания!\n");
-	break;
+        break;
     case -7:
         printf("Ошибка открытия бд\n");
-	break;
+        break;
     }
 }

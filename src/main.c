@@ -59,7 +59,7 @@ int main(int argc, char** argv)
         GtkButton* button_edit;
         char tm[14] = "editButton";
         char t[3];
-        itoa_rec(j + 1, t);
+        snprintf(t, 3, "%d", j + 1);
         strcat(tm, t);
         button_edit = GTK_BUTTON(gtk_builder_get_object(i->builder, tm));
         GtkLabel* label_main = &l_main;

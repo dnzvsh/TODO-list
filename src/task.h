@@ -34,17 +34,15 @@ int open_view_window(GtkWidget* widget, gpointer data);
 
 // void read_data(Task_data* data, char* argv);
 
-int itoa_rec(int a, char str[]);
-
 void parse_error(int err);
 
-int add_task(GtkWidget* widget, gpointer user_data);
+void add_task_click(GtkWidget* widget, gpointer user_data);
 
 int open_add_window(GtkWidget* widget, gpointer data);
 
-int delete_task(GtkWidget* widget, gpointer user_data);
+void delete_task_click(GtkWidget* widget, gpointer user_data);
 
-int update_task(GtkWidget* widget, gpointer user_data);
+void update_task_click(GtkWidget* widget, gpointer user_data);
 
 int add_category(sqlite3* db, char* category_name);
 
