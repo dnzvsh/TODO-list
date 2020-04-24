@@ -14,5 +14,15 @@ build/task.o: src/task.c src/task.h
 format: src/main.c
 	clang-format -i src/main.c src/task.h src/task.c
 
+bin/todo-test: build/test/todo_test.o
+	gcc $(ERROR_OPTIONS) build/test/main.o build/test/todo_test.o build/src/task.o -o bin/todo-test
+
+build/test/main.o: thirdparty/ctest.h 
+	gcc -I thirdparty -c test/main.c -o build/test/main.o
+
+build/test/todo_test.o: src/task.h thirdparty/ctest.h 
+	gcc -I thirdparty -I src -c test/todo_test.c -o build/test/todo_test.o
+
+
 clear:
-	rm -rf build/*.o bin/todo
+	rm -rf build/*.o bin/todo bin/todo-test 
