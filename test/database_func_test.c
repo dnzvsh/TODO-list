@@ -43,16 +43,39 @@ void initialize_db(Task_data* data)
     sqlite3_exec(data->db, CATEGORIES, 0, 0, NULL);
 }
 
+void clear_db(sqlite3* db)
+{
+    sqlite3_exec(db, "DELETE from TODO", 0, 0, NULL);
+}
+
+CTEST(test_show_task, correct_show_task)
+{
+    char test_task[20][1000];
+    char test_date[20][26];
+    char* real_task[3] = {"test_task_1", "test_task_2", "test_task_3"};
+    Task_data data;
+    initialize_db(&data);
+    clear_db(data.db);
+    for (int i = 0; i < 3; i++) {
+        strcpy(data.task, real_task[i]);
+        add_task(&data);
+    }
+    int exp = 3;
+    int real = show_task(data.db, test_task, test_date);
+    ASSERT_EQUAL(exp, real);
+    // ASSERT_STR(str[i].task, real_task[i]);
+}
+
 CTEST(test_add_task, correct_add_task)
 {
     test str;
     char* real_task = "test_task";
     Task_data data;
     initialize_db(&data);
+    clear_db(data.db);
     strcpy(data.task, real_task);
     int exp = 0;
     int real = add_task(&data);
-
     show_database_with_par(data.db, "Task", &str, real_task);
     ASSERT_STR(str.task, real_task);
     ASSERT_EQUAL(exp, real);
@@ -64,6 +87,7 @@ CTEST(test_add_task, Null_add_task)
     char* real_task = "";
     Task_data data;
     initialize_db(&data);
+    clear_db(data.db);
     strcpy(data.task, real_task);
     int exp = -3;
     int real = add_task(&data);
@@ -78,6 +102,7 @@ CTEST(test_delete_task, correct_delete_task)
     char* real_task = "";
     Task_data data;
     initialize_db(&data);
+    clear_db(data.db);
     strcpy(data.task, real_task);
     int exp = 0;
     add_task(&data);
