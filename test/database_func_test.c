@@ -71,3 +71,18 @@ CTEST(test_add_task, Null_add_task)
     ASSERT_STR(str.task, real_task);
     ASSERT_EQUAL(exp, real);
 }
+
+CTEST(test_delete_task, correct_delete_task)
+{
+    test str;
+    char* real_task = "";
+    Task_data data;
+    initialize_db(&data);
+    strcpy(data.task, real_task);
+    int exp = 0;
+    add_task(&data);
+    int real = delete_task(&data);
+    show_database_with_par(data.db, "Date", &str, "test_delete");
+    ASSERT_STR(str.task, real_task);
+    ASSERT_EQUAL(exp, real);
+}
