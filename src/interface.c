@@ -1,9 +1,9 @@
-#include "task.h"
+#include "interface.h"
+#include "database_func.h"
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 void read_buffer(GtkBuilder* builder, char* text_id, char* text)
 {
@@ -16,28 +16,6 @@ void read_buffer(GtkBuilder* builder, char* text_id, char* text)
     gtk_text_buffer_get_end_iter(buffer, &end);
 
     strcpy(text, (char*)gtk_text_buffer_get_text(buffer, &start, &end, FALSE));
-}
-
-int sql_request(Task_data* data)
-{
-    sqlite3_stmt* stmt;
-    int i = 1;
-    sqlite3_prepare_v2(data->db, data->sql, -1, &stmt, NULL);
-    if (strcmp(data->argv, "delete")) {
-        sqlite3_bind_text(stmt, i, data->task, -1, NULL);
-        i++;
-    }
-    if (data->date) {
-        sqlite3_bind_text(stmt, i, data->date, -1, NULL);
-        i++;
-    }
-    int err = sqlite3_step(stmt);
-    if (err != SQLITE_DONE) {
-        sqlite3_finalize(stmt);
-        return -1;
-    }
-    sqlite3_finalize(stmt);
-    return 0;
 }
 
 void close_window(GtkWidget* widget, gpointer user_data)
@@ -72,11 +50,41 @@ void read_data(Task_data* data, char* argv)
     strcpy(data->argv, argv);
 }
 */
+
+void filling_label(Task_data* data, int id, char* task, char* label_type)
+{
+    char tmp[3];
+    snprintf(tmp, 3, "%d", id + 1);
+    strcat(label_type, tmp);
+    GtkLabel* label
+            = GTK_LABEL(gtk_builder_get_object(data->builder, label_type));
+    gtk_label_set_text(label, task);
+}
+
+void update_main_window(Task_data* data)
+{
+    char label_main[20][1000];
+    char label_date[20][26];
+    int j = show_task(data->db, label_main, label_date);
+    int i = 0;
+    while (i < j) {
+        char l_date[12] = "labelTime";
+        char l_main[15] = "labelM";
+        filling_label(data, i, label_main[i], l_main);
+        filling_label(data, i, label_date[i], l_date);
+        i++;
+    }
+    char l_date[12] = "labelTime";
+    char l_main[15] = "labelM";
+    filling_label(data, i, " ", l_main);
+    filling_label(data, i, " ", l_date);
+}
+
 void show_task_on_add(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
     Task_data* data = user_data;
-    show_task(data);
+    update_main_window(data);
 }
 
 int open_add_window(GtkWidget* widget, gpointer user_data)
@@ -106,40 +114,12 @@ int open_add_window(GtkWidget* widget, gpointer user_data)
     return 0;
 }
 
-int add_task(Task_data* data)
-{
-    read_buffer(data->builder_window, "textViewA", data->task);
-    strcpy(data->sql, "INSERT INTO TODO (Task,Date) VALUES (?,?);");
-    const time_t sec = time(NULL);
-    char* t = ctime(&sec);
-    strcpy(data->date, t);
-    if (data->task[0] == 0) {
-        return -3;
-    }
-    int err = sql_request(data);
-    if (err) {
-        return -2;
-    }
-    // gtk_widget_hide();
-    return 0;
-}
-
 void add_task_click(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
     Task_data* data = (Task_data*)user_data;
+    read_buffer(data->builder_window, "textViewA", data->task);
     add_task(data);
-}
-
-int delete_task(Task_data* data)
-{
-    strcpy(data->argv, "delete");
-    strcpy(data->sql, "DELETE FROM TODO WHERE Date = ?;");
-    int err = sql_request(data);
-    if (err) {
-        return -4;
-    }
-    return 0;
 }
 
 void delete_task_click(GtkWidget* widget, gpointer user_data)
@@ -149,26 +129,11 @@ void delete_task_click(GtkWidget* widget, gpointer user_data)
     delete_task(data);
 }
 
-int update_task(Task_data* data)
-{
-    read_buffer(data->builder_window, "textViewV", data->task);
-    strcpy(data->argv, "update");
-    if (!data->task) {
-        return -5;
-    }
-    strcpy(data->sql, "UPDATE TODO SET Task = ? WHERE Date = ?;");
-    int err = sql_request(data);
-    if (err) {
-        g_print("error\n");
-        return -6;
-    }
-    return 0;
-}
-
 void update_task_click(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
     Task_data* data = (Task_data*)user_data;
+    read_buffer(data->builder_window, "textViewV", data->task);
     update_task(data);
 }
 
@@ -192,36 +157,6 @@ int add_category(sqlite3* db, char* category_name)
     return 0;
 }
 */
-void filling_label(Task_data* data, int id, char* task, char* label_type)
-{
-    char tmp[3];
-    snprintf(tmp, 3, "%d", id + 1);
-    strcat(label_type, tmp);
-    GtkLabel* label
-            = GTK_LABEL(gtk_builder_get_object(data->builder, label_type));
-    gtk_label_set_text(label, task);
-}
-
-int show_task(Task_data* data)
-{
-    sqlite3_stmt* stmt;
-    int j = 0;
-    sqlite3_prepare_v2(
-            data->db, "select Task,Date from TODO;", -1, &stmt, NULL);
-    while (sqlite3_step(stmt) != SQLITE_DONE) {
-        char label_main[15] = "labelM";
-        char label_date[12] = "labelTime";
-        filling_label(data, j, (char*)sqlite3_column_text(stmt, 0), label_main);
-        filling_label(data, j, (char*)sqlite3_column_text(stmt, 1), label_date);
-        j++;
-    }
-    char label_date[12] = "labelTime";
-    char label_main[15] = "labelM";
-    filling_label(data, j, " ", label_main);
-    filling_label(data, j, " ", label_date);
-    sqlite3_finalize(stmt);
-    return 0;
-}
 
 void read_labels(
         GtkLabel* label_main, GtkLabel* label_date, int num, Task_data* i)
@@ -237,6 +172,17 @@ void read_labels(
     strcat(label_name, tmp);
     label_date = GTK_LABEL(gtk_builder_get_object(i->builder, label_name));
     strcpy(i->date, (char*)gtk_label_get_text(label_date));
+}
+
+void initialize_buffer_view(GtkBuilder* builder, Task_data* data)
+{
+    GtkTextBuffer* buffer;
+    buffer = gtk_text_view_get_buffer(
+            GTK_TEXT_VIEW(gtk_builder_get_object(builder, "textViewV")));
+    GtkLabel label_main;
+    GtkLabel label_date;
+    read_labels(&label_main, &label_date, data->index, data);
+    gtk_text_buffer_set_text(buffer, data->task, -1);
 }
 
 void initialize_edit_button(GtkWidget* widget, gpointer user_data)
@@ -257,17 +203,6 @@ void initialize_edit_button(GtkWidget* widget, gpointer user_data)
     }
     i->rc = g_signal_connect(
             button_edit, "clicked", G_CALLBACK(open_view_window), i);
-}
-
-void initialize_buffer_view(GtkBuilder* builder, Task_data* data)
-{
-    GtkTextBuffer* buffer;
-    buffer = gtk_text_view_get_buffer(
-            GTK_TEXT_VIEW(gtk_builder_get_object(builder, "textViewV")));
-    GtkLabel label_main;
-    GtkLabel label_date;
-    read_labels(&label_main, &label_date, data->index, data);
-    gtk_text_buffer_set_text(buffer, data->task, -1);
 }
 
 int open_view_window(GtkWidget* widget, gpointer user_data)
@@ -326,31 +261,4 @@ int open_view_window(GtkWidget* widget, gpointer user_data)
             G_OBJECT(edit_button), "clicked", G_CALLBACK(close_window), window);
     gtk_widget_show(window);
     return 0;
-}
-
-void parse_error(int err)
-{
-    switch (err) {
-    case -1:
-        printf("Ошибка в запросе\n");
-        break;
-    case -2:
-        printf("Ошибка при добавлении задания\n");
-        break;
-    case -3:
-        printf("Добавление пустого задания!\n");
-        break;
-    case -4:
-        printf("Ошибка при удалении задания\n");
-        break;
-    case -5:
-        printf("Обновление на пустое задание!\n");
-        break;
-    case -6:
-        printf("Ошибка при обновлении задания!\n");
-        break;
-    case -7:
-        printf("Ошибка открытия бд\n");
-        break;
-    }
 }

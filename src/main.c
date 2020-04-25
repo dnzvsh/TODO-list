@@ -1,5 +1,6 @@
+#include "database_func.h"
+#include "interface.h"
 #include "sqlite3.h"
-#include "task.h"
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <string.h>
@@ -19,7 +20,7 @@ int main(int argc, char** argv)
     }
 
     // выполняем SQL
-    else if (sqlite3_exec(db, TODO, 0, 0, &error)) {
+    if (sqlite3_exec(db, TODO, 0, 0, &error)) {
         printf("Ошибка SQL: %s\n", error);
         sqlite3_free(error);
         return 0;
@@ -40,7 +41,8 @@ int main(int argc, char** argv)
     Task_data d;
     d.db = db;
     d.builder = builder;
-    show_task(&d);
+
+    update_main_window(&d);
 
     g_signal_connect(
             G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
