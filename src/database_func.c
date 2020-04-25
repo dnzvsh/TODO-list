@@ -30,7 +30,7 @@ int add_task(Task_data* data)
     const time_t sec = time(NULL);
     char* t = ctime(&sec);
     strcpy(data->date, t);
-    if (data->task[0] == 0) {
+    if (strlen(data->task) == 0) {
         return -3;
     }
     int err = sql_request(data);
