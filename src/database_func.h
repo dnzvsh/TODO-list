@@ -1,5 +1,6 @@
-#ifndef TASK_H
-#define TASK_H
+#ifndef DATABASE_FUNCTION_H
+#define DATABASE_FUNCTION_H
+
 #define DATABASE_PATH "src/database.db"
 
 #define TODO                                                       \
@@ -25,29 +26,14 @@ typedef struct {
     GtkBuilder* builder_window;
 } Task_data;
 
-void read_labels(
-        GtkLabel* label_main, GtkLabel* label_date, int num, Task_data* i);
+int show_task(sqlite3* db, char label_main[][1000], char label_date[][26]);
 
-void initialize_edit_button(GtkWidget* widget, gpointer user_data);
-
-int open_view_window(GtkWidget* widget, gpointer data);
-
-// void read_data(Task_data* data, char* argv);
-
-const int itoa_rec(int a, char str[]);
+int update_task(Task_data* data);
 
 void parse_error(int err);
 
-int add_task(GtkWidget* widget, gpointer user_data);
+int delete_task(Task_data* data);
 
-int open_add_window(GtkWidget* widget, gpointer data);
-
-int delete_task(GtkWidget* widget, gpointer user_data);
-
-int update_task(GtkWidget* widget, gpointer user_data);
-
-int add_category(sqlite3* db, char* category_name);
-
-int show_task(Task_data* data);
+int add_task(Task_data* data);
 
 #endif
