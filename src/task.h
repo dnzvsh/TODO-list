@@ -19,13 +19,22 @@ typedef struct {
     char sql[150];
     sqlite3* db;
     char argv[10];
+    GtkBuilder* builder;
+    int rc;
+    int index;
+    GtkBuilder* builder_window;
 } Task_data;
 
-void read_data(Task_data* data, char* argv);
+void read_labels(
+        GtkLabel* label_main, GtkLabel* label_date, int num, Task_data* i);
 
-void show_task_on_add(GtkWidget* widget, gpointer user_data);
+void initialize_edit_button(GtkWidget* widget, gpointer user_data);
 
-int add_db(sqlite3* db);
+int open_view_window(GtkWidget* widget, gpointer data);
+
+// void read_data(Task_data* data, char* argv);
+
+const int itoa_rec(int a, char str[]);
 
 void parse_error(int err);
 
@@ -33,12 +42,12 @@ int add_task(GtkWidget* widget, gpointer user_data);
 
 int open_add_window(GtkWidget* widget, gpointer data);
 
-int delete_task(Task_data* data);
+int delete_task(GtkWidget* widget, gpointer user_data);
 
-int update_task(Task_data* data);
+int update_task(GtkWidget* widget, gpointer user_data);
 
 int add_category(sqlite3* db, char* category_name);
 
-int show_task(GtkBuilder* builder);
+int show_task(Task_data* data);
 
 #endif
