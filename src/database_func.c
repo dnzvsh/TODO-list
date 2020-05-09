@@ -55,7 +55,7 @@ int delete_task(Task_data* data)
 int update_task(Task_data* data)
 {
     strcpy(data->argv, "update");
-    if (!data->task) {
+    if (strlen(data->task) == 0) {
         return -5;
     }
     strcpy(data->sql, "UPDATE TODO SET Task = ? WHERE Date = ?;");
