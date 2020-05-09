@@ -107,7 +107,41 @@ CTEST(test_delete_task, correct_delete_task)
     int exp = 0;
     add_task(&data);
     int real = delete_task(&data);
-    show_database_with_par(data.db, "Date", &str, "test_delete");
+    show_database_with_par(data.db, "Task", &str, "test_delete");
+    ASSERT_STR(str.task, real_task);
+    ASSERT_EQUAL(exp, real);
+}
+
+CTEST(test_edit_task, correct_edit_task)
+{
+    test str;
+    char* task = "First_task";
+    char* real_task = "Second_task";
+    Task_data data;
+    initialize_db(&data);
+    clear_db(data.db);
+    strcpy(data.task, task);
+    int exp = 0;
+    add_task(&data);
+    strcpy(data.task, real_task);
+    int real = update_task(&data);
+    show_database_with_par(data.db, "Task", &str, "Second_task");
+    ASSERT_STR(str.task, real_task);
+    ASSERT_EQUAL(exp, real);
+}
+
+CTEST(test_edit_task, uncorrect_edit_task)
+{
+    test str;
+    char* real_task = "";
+    Task_data data;
+    initialize_db(&data);
+    clear_db(data.db);
+    strcpy(data.task, real_task);
+    int exp = -5;
+    add_task(&data);
+    int real = update_task(&data);
+    show_database_with_par(data.db, "Date", &str, "");
     ASSERT_STR(str.task, real_task);
     ASSERT_EQUAL(exp, real);
 }
