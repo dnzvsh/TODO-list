@@ -18,6 +18,7 @@ typedef struct {
     char task[1000];
     char date[26];
     char sql[150];
+    char category_name[100];
     sqlite3* db;
     char argv[10];
     GtkBuilder* builder;
@@ -35,5 +36,9 @@ void parse_error(int err);
 int delete_task(Task_data* data);
 
 int add_task(Task_data* data);
+
+int add_category(Task_data* data);
+
+int add_category_for_task(Task_data* data);
 
 #endif

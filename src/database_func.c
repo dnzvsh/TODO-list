@@ -67,6 +67,32 @@ int update_task(Task_data* data)
     return 0;
 }
 
+int add_category(Task_data* data) 
+{
+    sqlite3_stmt* stmt;
+    strcpy(data->sql, "INSERT INTO CATEGORIES (category_name) VALUES (?);");
+    if (strlen(data->category_name) == 0) {
+        return -9;
+    }
+    int err = sql_request(data);
+    if (err) {
+        return -8;
+    }
+    return 0;
+}
+
+int add_category_for_task(Task_data* data)
+{
+    sqlite3_stmt* stmt; 
+    strcpy(data->argv, "updateC");
+    strcpy(data->sql, "SELECT * FROM TODO INNER JOIN CATEGORIES ON (task_id) = (category_id);");
+    int err = sql_request(data);
+    if (err) {
+        return -10;
+    }
+    return 0;
+}
+
 int show_task(sqlite3* db, char label_main[][1000], char label_date[][26])
 {
     sqlite3_stmt* stmt;
@@ -104,6 +130,15 @@ void parse_error(int err)
         break;
     case -7:
         printf("Ошибка открытия бд\n");
+        break;
+    case -8:
+        printf("Добавление пустой категории!\n");
+        break;
+    case -9:
+        printf("Ошибка при добавлении категории\n");
+        break;
+    case -10:
+        printf("Ошибка при добавлении категории к задаче");
         break;
     }
 }
