@@ -157,6 +157,6 @@ CTEST(test_category, correct_add_category)
     int exp = 0;
     int real = add_category(&data);
     show_database_with_par(data.db, "Category", &str, real_category);
-    ASSERT_STR(str.category_name, real_task);
+    ASSERT_STR(str.category_name, real_category);
     ASSERT_EQUAL(exp, real);
 }

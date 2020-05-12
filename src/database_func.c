@@ -72,18 +72,18 @@ int add_category(Task_data* data)
     sqlite3_stmt* stmt;
     strcpy(data->sql, "INSERT INTO CATEGORIES (category_name) VALUES (?);");
     if (strlen(data->category_name) == 0) {
-        return -9;
+        return -8;
     }
     int err = sql_request(data);
     if (err) {
-        return -8;
+        return -9;
     }
     return 0;
 }
 
 int add_category_for_task(Task_data* data)
 {
-    sqlite3_stmt* stmt; 
+    sqlite3_stmt* stmt;
     strcpy(data->argv, "updateC");
     strcpy(data->sql, "SELECT * FROM TODO INNER JOIN CATEGORIES ON (task_id) = (category_id);");
     int err = sql_request(data);
