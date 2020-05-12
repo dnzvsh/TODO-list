@@ -145,3 +145,18 @@ CTEST(test_edit_task, uncorrect_edit_task)
     ASSERT_STR(str.task, real_task);
     ASSERT_EQUAL(exp, real);
 }
+
+CTEST(test_category, correct_add_category)
+{
+    test str;
+    char* real_category = "test_category";
+    Task_data data;
+    initialize_db(&data);
+    clear_db(data.db);
+    strcpy(data.category_name, real_category);
+    int exp = 0;
+    int real = add_category(&data);
+    show_database_with_par(data.db, "Category", &str, real_category);
+    ASSERT_STR(str.category_name, real_task);
+    ASSERT_EQUAL(exp, real);
+}
