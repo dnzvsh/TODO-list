@@ -4,6 +4,7 @@
 
 typedef struct {
     char date[26];
+    char category_name[100];
     char task[1000];
 } test;
 
@@ -17,10 +18,19 @@ void show_database_with_par(sqlite3* db, char* par, test* buf, char* str)
                 -1,
                 &stmt,
                 NULL);
-    } else {
+    }
+    if (!strcmp("Date", par)) {
         sqlite3_prepare_v2(
                 db,
                 "select Date,Task from TODO WHERE Date = ?;",
+                -1,
+                &stmt,
+                NULL);
+    }
+    if (!strcmp("Category", par)) {
+        sqlite3_prepare_v2(
+                db,
+                "select category_name from CATEGORIES WHERE category_name = ?;",
                 -1,
                 &stmt,
                 NULL);
@@ -30,8 +40,12 @@ void show_database_with_par(sqlite3* db, char* par, test* buf, char* str)
     if (err == 101) {
         buf->task[0] = '\0';
     } else {
-        strcpy(buf->date, (char*)sqlite3_column_text(stmt, 0));
-        strcpy(buf->task, (char*)sqlite3_column_text(stmt, 1));
+        if (!strcmp("Category", par)) {
+            strcpy(buf->category_name, (char*)sqlite3_column_text(stmt, 0));
+        } else {
+            strcpy(buf->date, (char*)sqlite3_column_text(stmt, 0));
+            strcpy(buf->task, (char*)sqlite3_column_text(stmt, 1));
+        }
     }
     sqlite3_finalize(stmt);
 }
@@ -46,6 +60,7 @@ void initialize_db(Task_data* data)
 void clear_db(sqlite3* db)
 {
     sqlite3_exec(db, "DELETE from TODO", 0, 0, NULL);
+    sqlite3_exec(db, "DELETE from CATEGORIES", 0, 0, NULL);
 }
 
 CTEST(test_show_task, correct_show_task)
