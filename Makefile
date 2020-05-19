@@ -1,5 +1,8 @@
 ERROR_OPTIONS=-Wall -Werror -Wextra 
 
+.PHONY:
+	clear format all
+
 all: bin/todo format bin/database-test
 
 bin/todo: build/src/main.o build/src/interface.o build/src/database_func.o
