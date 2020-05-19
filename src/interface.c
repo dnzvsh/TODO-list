@@ -70,7 +70,7 @@ int open_add_window(GtkWidget* widget, gpointer user_data)
     GtkButton* button;
 
     builder = gtk_builder_new();
-    gtk_builder_add_from_file(builder, "src/addWindow.glade", NULL);
+    gtk_builder_add_from_file(builder, "src/GUI/addWindow.glade", NULL);
     data->builder_window = builder;
     button = GTK_BUTTON(gtk_builder_get_object(builder, "addButtonA"));
 
@@ -166,7 +166,7 @@ int open_view_window(GtkWidget* widget, gpointer user_data)
     GUI* data = (GUI*)user_data;
     GtkBuilder* builder;
     builder = gtk_builder_new();
-    gtk_builder_add_from_file(builder, "src/viewWindow.glade", NULL);
+    gtk_builder_add_from_file(builder, "src/GUI/viewWindow.glade", NULL);
     data->builder_window = builder;
     initialize_buffer_view(builder, data);
     GtkWidget* window
