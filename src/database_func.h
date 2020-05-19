@@ -51,4 +51,8 @@ int add_category(Task_data* data);
 
 int bind_category_for_task(Task_data* data);
 
+int delete_category(Task_data* data);
+
+int update_category(Task_data* data);
+
 #endif

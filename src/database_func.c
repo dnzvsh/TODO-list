@@ -90,6 +90,34 @@ int add_category(Task_data* data)
     return 0;
 }
 
+int delete_category(Task_data* data)
+{
+    data->argv[0] = CATEGORY;
+    data->argv[1] = CATEGORY_DELETE;
+    strcpy(data->sql, "DELETE FROM CATEGORIES WHERE category_name = ?;");
+    int err = sql_request(data);
+    if (err) {
+        return -11;
+    }
+    return 0;
+}
+
+int update_category(Task_data* data)
+{
+    data->argv[0] = CATEGORY;
+    data->argv[1] = CATEGORY_UPDATE;
+    if (strlen(data->new_category_name) == 0) {
+        return -12;
+    }
+    strcpy(data->sql,
+           "UPDATE CATEGORIES SET category_name = ? WHERE category_name = ?;");
+    int err = sql_request(data);
+    if (err) {
+        return -13;
+    }
+    return 0;
+}
+
 int bind_category_for_task(Task_data* data)
 {
     data->argv[0] = CATEGORY;
@@ -152,4 +180,13 @@ void parse_error(int err)
         printf("Ошибка при добавлении категории к задаче");
         break;
     }
+    case -11:
+        printf("Ошибка при удалении категории\n");
+        break;
+    case -12:
+        printf("Ошибка при обновлении пустой категории\n");
+        break;
+    case -13:
+        printf("Ошибка при обновлении категории\n");
+        break;
 }
