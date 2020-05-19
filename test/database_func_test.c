@@ -39,6 +39,7 @@ void show_database_with_par(sqlite3* db, char* par, test* buf, char* str)
     int err = sqlite3_step(stmt);
     if (err == 101) {
         buf->task[0] = '\0';
+        buf->category_name[0] = '\0';
     } else {
         if (!strcmp("Category", par)) {
             strcpy(buf->category_name, (char*)sqlite3_column_text(stmt, 0));
@@ -228,16 +229,16 @@ CTEST(test_category, correct_edit_category)
 CTEST(test_category, uncorrect_edit_category)
 {
     test str;
-    char* real_category = "";
+    char* real_category = "First category";
     Task_data data;
     initialize_db(&data);
     clear_db(data.db);
     strcpy(data.category_name, real_category);
+    data.new_category_name[0] = '\0';
     int exp = -12;
     add_category(&data);
     int real = update_category(&data);
-    show_database_with_par(data.db, "Category", &str, "");
+    show_database_with_par(data.db, "Category", &str, real_category);
     ASSERT_STR(str.category_name, real_category);
     ASSERT_EQUAL(exp, real);
 }
-
