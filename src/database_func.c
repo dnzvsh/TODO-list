@@ -16,10 +16,14 @@ int sql_request(Task_data* data)
             sqlite3_bind_text(stmt, i, data->date, -1, NULL);
             i++;
         }
-    } else {
-        if (data->argv[1] == CATEGORY_ADD) {
-            sqlite3_bind_text(stmt, i, data->category_name, -1, NULL);
+    }
+    if (data->argv[0] == CATEGORY) {
+        if (data->argv[1] == CATEGORY_UPDATE) {
+            sqlite3_bind_text(stmt, i, data->new_category_name, -1, NULL);
+            i++;
         }
+        sqlite3_bind_text(stmt, i, data->category_name, -1, NULL);
+        i++;
     }
     int err = sqlite3_step(stmt);
     if (err != SQLITE_DONE) {
