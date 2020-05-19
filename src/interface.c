@@ -137,27 +137,6 @@ void update_task_click(GtkWidget* widget, gpointer user_data)
     update_task(data);
 }
 
-/*
-int add_category(sqlite3* db, char* category_name)
-{
-    sqlite3_stmt* stmt;
-    sqlite3_prepare_v2(
-            db,
-            "INSERT INTO CATEGORIES (category_name) VALUES (?);",
-            -1,
-            &stmt,
-            NULL);
-    sqlite3_bind_text(stmt, 1, category_name, -1, NULL);
-    int err = sqlite3_step(stmt);
-    if (err != SQLITE_DONE) {
-        sqlite3_finalize(stmt);
-        return -1;
-    }
-    sqlite3_finalize(stmt);
-    return 0;
-}
-*/
-
 void read_labels(
         GtkLabel* label_main, GtkLabel* label_date, int num, Task_data* i)
 {

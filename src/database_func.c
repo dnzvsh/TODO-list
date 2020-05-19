@@ -7,13 +7,19 @@ int sql_request(Task_data* data)
     sqlite3_stmt* stmt;
     int i = 1;
     sqlite3_prepare_v2(data->db, data->sql, -1, &stmt, NULL);
-    if (strcmp(data->argv, "delete")) {
-        sqlite3_bind_text(stmt, i, data->task, -1, NULL);
-        i++;
-    }
-    if (data->date) {
-        sqlite3_bind_text(stmt, i, data->date, -1, NULL);
-        i++;
+    if (data->argv[0] == TASK) {
+        if (data->argv[1] != TASK_DELETE) {
+            sqlite3_bind_text(stmt, i, data->task, -1, NULL);
+            i++;
+        }
+        if (data->date) {
+            sqlite3_bind_text(stmt, i, data->date, -1, NULL);
+            i++;
+        }
+    } else {
+        if (data->argv[1] == CATEGORY_ADD) {
+            sqlite3_bind_text(stmt, i, data->category_name, -1, NULL);
+        }
     }
     int err = sqlite3_step(stmt);
     if (err != SQLITE_DONE) {
@@ -26,6 +32,7 @@ int sql_request(Task_data* data)
 
 int add_task(Task_data* data)
 {
+    data->argv[0] = TASK;
     strcpy(data->sql, "INSERT INTO TODO (Task,Date) VALUES (?,?);");
     const time_t sec = time(NULL);
     char* t = ctime(&sec);
@@ -37,13 +44,13 @@ int add_task(Task_data* data)
     if (err) {
         return -2;
     }
-    // gtk_widget_hide();
     return 0;
 }
 
 int delete_task(Task_data* data)
 {
-    strcpy(data->argv, "delete");
+    data->argv[0] = TASK;
+    data->argv[1] = TASK_DELETE;
     strcpy(data->sql, "DELETE FROM TODO WHERE Date = ?;");
     int err = sql_request(data);
     if (err) {
@@ -54,7 +61,8 @@ int delete_task(Task_data* data)
 
 int update_task(Task_data* data)
 {
-    strcpy(data->argv, "update");
+    data->argv[0] = TASK;
+    data->argv[1] = TASK_UPDATE;
     if (strlen(data->task) == 0) {
         return -5;
     }
@@ -63,6 +71,63 @@ int update_task(Task_data* data)
     if (err) {
         g_print("error\n");
         return -6;
+    }
+    return 0;
+}
+
+int add_category(Task_data* data)
+{
+    data->argv[0] = CATEGORY;
+    data->argv[1] = CATEGORY_ADD;
+    strcpy(data->sql, "INSERT INTO CATEGORIES (category_name) VALUES (?);");
+    if (strlen(data->category_name) == 0) {
+        return -8;
+    }
+    int err = sql_request(data);
+    if (err) {
+        return -9;
+    }
+    return 0;
+}
+
+int delete_category(Task_data* data)
+{
+    data->argv[0] = CATEGORY;
+    data->argv[1] = CATEGORY_DELETE;
+    strcpy(data->sql, "DELETE FROM CATEGORIES WHERE category_name = ?;");
+    int err = sql_request(data);
+    if (err) {
+        return -11;
+    }
+    return 0;
+}
+
+int update_category(Task_data* data)
+{
+    data->argv[0] = CATEGORY;
+    data->argv[1] = CATEGORY_UPDATE;
+    if (strlen(data->new_category_name) == 0) {
+        return -12;
+    }
+    strcpy(data->sql,
+           "UPDATE CATEGORIES SET category_name = ? WHERE category_name = ?;");
+    int err = sql_request(data);
+    if (err) {
+        return -13;
+    }
+    return 0;
+}
+
+int bind_category_for_task(Task_data* data)
+{
+    data->argv[0] = CATEGORY;
+    data->argv[1] = CATEGORY_BIND;
+    strcpy(data->sql,
+           "SELECT * FROM TODO INNER JOIN CATEGORIES ON (task_id) = "
+           "(category_id);");
+    int err = sql_request(data);
+    if (err) {
+        return -10;
     }
     return 0;
 }
@@ -105,5 +170,23 @@ void parse_error(int err)
     case -7:
         printf("Ошибка открытия бд\n");
         break;
+    case -8:
+        printf("Добавление пустой категории!\n");
+        break;
+    case -9:
+        printf("Ошибка при добавлении категории\n");
+        break;
+    case -10:
+        printf("Ошибка при добавлении категории к задаче");
+        break;
     }
+    case -11:
+        printf("Ошибка при удалении категории\n");
+        break;
+    case -12:
+        printf("Ошибка при обновлении пустой категории\n");
+        break;
+    case -13:
+        printf("Ошибка при обновлении категории\n");
+        break;
 }

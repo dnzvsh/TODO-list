@@ -26,6 +26,4 @@ void delete_task_click(GtkWidget* widget, gpointer user_data);
 
 void update_task_click(GtkWidget* widget, gpointer user_data);
 
-int add_category(sqlite3* db, char* category_name);
-
 #endif
