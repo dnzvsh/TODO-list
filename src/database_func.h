@@ -25,16 +25,13 @@
 #include <sqlite3.h>
 
 typedef struct {
+    sqlite3* db;
     char task[1000];
     char date[26];
     char sql[150];
     char category_name[100];
+    char new_category_name[100];
     int argv[2];
-    sqlite3* db;
-    GtkBuilder* builder;
-    int rc;
-    int index;
-    GtkBuilder* builder_window;
 } Task_data;
 
 int show_task(sqlite3* db, char label_main[][1000], char label_date[][26]);

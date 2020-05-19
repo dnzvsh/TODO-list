@@ -24,34 +24,8 @@ void close_window(GtkWidget* widget, gpointer user_data)
     GtkWidget* window = user_data;
     gtk_widget_hide(window);
 }
-/*
-void read_data(Task_data* data, char* argv)
-{
-    int i = 0;
-    char k;
-    if (strcmp("add", argv)) {
-        printf("Введите дату: ");
-        while ((k = getchar()) != '\n') {
-            data->date[i] = k;
-            i++;
-        }
-        data->date[24] = '\n';
-        data->date[25] = '\0';
-        i = 0;
-    }
-    if (strcmp("delete", argv)) {
-        printf("Введите заметку: ");
-        while ((k = getchar()) != '\n') {
-            data->task[i] = k;
-            i++;
-        }
-        data->task[i] = '\0';
-    }
-    strcpy(data->argv, argv);
-}
-*/
 
-void filling_label(Task_data* data, int id, char* task, char* label_type)
+void filling_label(GUI* data, int id, char* task, char* label_type)
 {
     char tmp[3];
     snprintf(tmp, 3, "%d", id + 1);
@@ -61,11 +35,11 @@ void filling_label(Task_data* data, int id, char* task, char* label_type)
     gtk_label_set_text(label, task);
 }
 
-void update_main_window(Task_data* data)
+void update_main_window(GUI* data)
 {
     char label_main[20][1000];
     char label_date[20][26];
-    int j = show_task(data->db, label_main, label_date);
+    int j = show_task(data->task.db, label_main, label_date);
     int i = 0;
     while (i < j) {
         char l_date[12] = "labelTime";
@@ -83,14 +57,14 @@ void update_main_window(Task_data* data)
 void show_task_on_add(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
-    Task_data* data = user_data;
+    GUI* data = user_data;
     update_main_window(data);
 }
 
 int open_add_window(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
-    Task_data* data = (Task_data*)user_data;
+    GUI* data = (GUI*)user_data;
     GtkBuilder* builder;
 
     GtkButton* button;
@@ -117,43 +91,45 @@ int open_add_window(GtkWidget* widget, gpointer user_data)
 void add_task_click(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
-    Task_data* data = (Task_data*)user_data;
-    read_buffer(data->builder_window, "textViewA", data->task);
-    add_task(data);
+    GUI* data = (GUI*)user_data;
+    read_buffer(data->builder_window, "textViewA", data->task.task);
+    add_task(&data->task);
 }
 
 void delete_task_click(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
-    Task_data* data = (Task_data*)user_data;
-    delete_task(data);
+    GUI* data = (GUI*)user_data;
+    delete_task(&data->task);
 }
 
 void update_task_click(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
-    Task_data* data = (Task_data*)user_data;
-    read_buffer(data->builder_window, "textViewV", data->task);
-    update_task(data);
+    GUI* data = (GUI*)user_data;
+    read_buffer(data->builder_window, "textViewV", data->task.task);
+    update_task(&data->task);
 }
 
 void read_labels(
-        GtkLabel* label_main, GtkLabel* label_date, int num, Task_data* i)
+        GtkLabel* label_main, GtkLabel* label_date, int num, GUI* interface)
 {
     char label_name[15] = "labelM";
     char tmp[3];
     snprintf(tmp, 3, "%d", num);
     strcat(label_name, tmp);
-    label_main = GTK_LABEL(gtk_builder_get_object(i->builder, label_name));
-    strcpy(i->task, (char*)gtk_label_get_text(label_main));
+    label_main
+            = GTK_LABEL(gtk_builder_get_object(interface->builder, label_name));
+    strcpy(interface->task.task, (char*)gtk_label_get_text(label_main));
 
     strcpy(label_name, "labelTime");
     strcat(label_name, tmp);
-    label_date = GTK_LABEL(gtk_builder_get_object(i->builder, label_name));
-    strcpy(i->date, (char*)gtk_label_get_text(label_date));
+    label_date
+            = GTK_LABEL(gtk_builder_get_object(interface->builder, label_name));
+    strcpy(interface->task.date, (char*)gtk_label_get_text(label_date));
 }
 
-void initialize_buffer_view(GtkBuilder* builder, Task_data* data)
+void initialize_buffer_view(GtkBuilder* builder, GUI* data)
 {
     GtkTextBuffer* buffer;
     buffer = gtk_text_view_get_buffer(
@@ -161,33 +137,33 @@ void initialize_buffer_view(GtkBuilder* builder, Task_data* data)
     GtkLabel label_main;
     GtkLabel label_date;
     read_labels(&label_main, &label_date, data->index, data);
-    gtk_text_buffer_set_text(buffer, data->task, -1);
+    gtk_text_buffer_set_text(buffer, data->task.task, -1);
 }
 
 void initialize_edit_button(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
-    Task_data* i = (Task_data*)user_data;
+    GUI* interface = (GUI*)user_data;
     GtkButton* button_edit;
     char tm[14] = "editButton";
     char t[3];
-    snprintf(t, 3, "%d", i->index);
+    snprintf(t, 3, "%d", interface->index);
     strcat(tm, t);
-    button_edit = GTK_BUTTON(gtk_builder_get_object(i->builder, tm));
+    button_edit = GTK_BUTTON(gtk_builder_get_object(interface->builder, tm));
     GtkLabel label_main;
     GtkLabel label_date;
-    read_labels(&label_main, &label_date, i->index, i);
-    if (i->rc != 0) {
-        g_signal_handler_disconnect(button_edit, i->rc);
+    read_labels(&label_main, &label_date, interface->index, interface);
+    if (interface->rc != 0) {
+        g_signal_handler_disconnect(button_edit, interface->rc);
     }
-    i->rc = g_signal_connect(
-            button_edit, "clicked", G_CALLBACK(open_view_window), i);
+    interface->rc = g_signal_connect(
+            button_edit, "clicked", G_CALLBACK(open_view_window), interface);
 }
 
 int open_view_window(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
-    Task_data* data = (Task_data*)user_data;
+    GUI* data = (GUI*)user_data;
     GtkBuilder* builder;
     builder = gtk_builder_new();
     gtk_builder_add_from_file(builder, "src/viewWindow.glade", NULL);
