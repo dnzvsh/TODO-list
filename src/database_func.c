@@ -183,7 +183,6 @@ void parse_error(int err)
     case -10:
         printf("Ошибка при добавлении категории к задаче");
         break;
-    }
     case -11:
         printf("Ошибка при удалении категории\n");
         break;
@@ -193,4 +192,5 @@ void parse_error(int err)
     case -13:
         printf("Ошибка при обновлении категории\n");
         break;
+    }
 }
