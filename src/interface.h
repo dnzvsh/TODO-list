@@ -32,4 +32,6 @@ void delete_task_click(GtkWidget* widget, gpointer user_data);
 
 void update_task_click(GtkWidget* widget, gpointer user_data);
 
+void show_error(int err);
+
 #endif

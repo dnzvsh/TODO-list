@@ -93,7 +93,10 @@ void add_task_click(GtkWidget* widget, gpointer user_data)
     (void)widget;
     GUI* data = (GUI*)user_data;
     read_buffer(data->builder_window, "textViewA", data->task.task);
-    add_task(&data->task);
+    int err = add_task(&data->task);
+    if (err) {
+        show_error(err);
+    }
 }
 
 void delete_task_click(GtkWidget* widget, gpointer user_data)
@@ -108,7 +111,10 @@ void update_task_click(GtkWidget* widget, gpointer user_data)
     (void)widget;
     GUI* data = (GUI*)user_data;
     read_buffer(data->builder_window, "textViewV", data->task.task);
-    update_task(&data->task);
+    int err = update_task(&data->task);
+    if (err) {
+        show_error(err);
+    }
 }
 
 void read_labels(
@@ -158,6 +164,24 @@ void initialize_edit_button(GtkWidget* widget, gpointer user_data)
     }
     interface->rc = g_signal_connect(
             button_edit, "clicked", G_CALLBACK(open_view_window), interface);
+}
+
+void open_error_window(char* error)
+{
+    GtkBuilder* builder;
+    builder = gtk_builder_new();
+    gtk_builder_add_from_file(builder, "src/GUI/errorWindow.glade", NULL);
+    GtkWidget* window
+            = GTK_WIDGET(gtk_builder_get_object(builder, "errorWindow"));
+    gtk_widget_show(window);
+    GtkLabel* label = GTK_LABEL(gtk_builder_get_object(builder, "errorLabel"));
+    gtk_label_set_text(label, error);
+    GtkButton* button
+            = GTK_BUTTON(gtk_builder_get_object(builder, "errorButton"));
+    g_signal_connect(
+            G_OBJECT(button), "clicked", G_CALLBACK(close_window), window);
+    g_signal_connect(
+            G_OBJECT(button), "destroy", G_CALLBACK(close_window), window);
 }
 
 int open_view_window(GtkWidget* widget, gpointer user_data)
@@ -216,4 +240,49 @@ int open_view_window(GtkWidget* widget, gpointer user_data)
             G_OBJECT(edit_button), "clicked", G_CALLBACK(close_window), window);
     gtk_widget_show(window);
     return 0;
+}
+
+void show_error(int err)
+{
+    switch (err) {
+    case -1:
+        open_error_window("Ошибка в запросе\n");
+        break;
+    case -2:
+        open_error_window("Ошибка при добавлении задания\n");
+        break;
+    case -3:
+        open_error_window("Добавление пустого задания!\n");
+        break;
+    case -4:
+        open_error_window("Ошибка при удалении задания\n");
+        break;
+    case -5:
+        open_error_window("Обновление на пустое задание!\n");
+        break;
+    case -6:
+        open_error_window("Ошибка при обновлении задания!\n");
+        break;
+    case -7:
+        open_error_window("Ошибка открытия бд\n");
+        break;
+    case -8:
+        open_error_window("Добавление пустой категории!\n");
+        break;
+    case -9:
+        open_error_window("Ошибка при добавлении категории\n");
+        break;
+    case -10:
+        open_error_window("Ошибка при добавлении категории к задаче");
+        break;
+    case -11:
+        open_error_window("Ошибка при удалении категории\n");
+        break;
+    case -12:
+        open_error_window("Ошибка при обновлении пустой категории\n");
+        break;
+    case -13:
+        open_error_window("Ошибка при обновлении категории\n");
+        break;
+    }
 }

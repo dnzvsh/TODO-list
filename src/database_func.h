@@ -38,8 +38,6 @@ int show_task(sqlite3* db, char label_main[][1000], char label_date[][26]);
 
 int update_task(Task_data* data);
 
-void parse_error(int err);
-
 int delete_task(Task_data* data);
 
 int add_task(Task_data* data);
