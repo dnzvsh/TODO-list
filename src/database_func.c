@@ -136,6 +136,17 @@ int bind_category_for_task(Task_data* data)
     return 0;
 }
 
+int task_score(sqlite3* db)
+{
+    sqlite3_stmt* stmt;
+    int j = 0;
+    sqlite3_prepare_v2(db, "select Task from TODO;", -1, &stmt, NULL);
+    while (sqlite3_step(stmt) != SQLITE_DONE) {
+        j++;
+    }
+    return j;
+}
+
 int show_task(sqlite3* db, char label_main[][1000], char label_date[][26])
 {
     sqlite3_stmt* stmt;
