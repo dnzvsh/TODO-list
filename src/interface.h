@@ -19,6 +19,7 @@ typedef struct {
     int action;
     GtkBuilder* builder_window;
     GtkBuilder* builder_window_category;
+    GtkBuilder* builder_add_window_category;
     int is_main;
 } GUI;
 
@@ -48,5 +49,9 @@ int task_score(sqlite3* db);
 void open_category_window(GtkWidget* widget, gpointer user_data);
 
 void add_category_window(GtkWidget* widget, gpointer user_data);
+
+void update_category_window(GUI* data);
+
+void show_category_on_add(GtkWidget* widget, gpointer user_data);
 
 #endif
