@@ -75,37 +75,36 @@ void update_edit_button_status(GtkWidget* widget, gpointer user_data)
     gtk_widget_set_sensitive((GtkWidget*)button_edit, TRUE);
 }
 
-int open_add_window(GtkWidget* widget, gpointer user_data)
+void open_add_window(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
     GUI* data = (GUI*)user_data;
     GtkBuilder* builder;
 
-    GtkButton* button;
+    GtkButton* AddButton;
 
     builder = gtk_builder_new();
     gtk_builder_add_from_file(builder, "src/GUI/addWindow.glade", NULL);
     data->builder_window = builder;
-    button = GTK_BUTTON(gtk_builder_get_object(builder, "addButtonA"));
-
+    AddButton = GTK_BUTTON(gtk_builder_get_object(builder, "addButtonA"));
+    GtkButton* CategoryButton
+            = GTK_BUTTON(gtk_builder_get_object(builder, "categoryButtonA"));
     g_signal_connect(
-            G_OBJECT(button), "clicked", G_CALLBACK(add_task_click), data);
+            G_OBJECT(AddButton), "clicked", G_CALLBACK(add_task_click), data);
     g_signal_connect(
-            G_OBJECT(button), "clicked", G_CALLBACK(show_task_on_add), data);
-    g_signal_connect(
-            G_OBJECT(button),
-            "clicked",
-            G_CALLBACK(update_edit_button_status),
-            data);
-
+            G_OBJECT(AddButton), "clicked", G_CALLBACK(show_task_on_add), data);
     GtkWidget* window
             = GTK_WIDGET(gtk_builder_get_object(builder, "addWindow"));
     g_signal_connect(
-            G_OBJECT(button), "clicked", G_CALLBACK(close_window), window);
+            G_OBJECT(AddButton), "clicked", G_CALLBACK(close_window), window);
+    g_signal_connect(
+            G_OBJECT(CategoryButton),
+            "clicked",
+            G_CALLBACK(open_category_window),
+            data);
     g_signal_connect(
             G_OBJECT(window), "destroy", G_CALLBACK(gtk_widget_hide), NULL);
     gtk_widget_show(window);
-    return 0;
 }
 
 void add_task_click(GtkWidget* widget, gpointer user_data)
@@ -278,6 +277,80 @@ int open_view_window(GtkWidget* widget, gpointer user_data)
             G_OBJECT(edit_button), "clicked", G_CALLBACK(close_window), window);
     gtk_widget_show(window);
     return 0;
+}
+
+void open_category_window(GtkWidget* widget, gpointer user_data)
+{
+    (void)widget;
+    GUI* data = (GUI*)user_data;
+    GtkBuilder* builder;
+    builder = gtk_builder_new();
+    gtk_builder_add_from_file(builder, "src/GUI/categoryWindow.glade", NULL);
+
+    GtkWidget* window
+            = GTK_WIDGET(gtk_builder_get_object(builder, "categoryWindow"));
+    GtkButton* closeButton
+            = GTK_BUTTON(gtk_builder_get_object(builder, "cancelButton"));
+
+    GtkButton* addButton
+            = GTK_BUTTON(gtk_builder_get_object(builder, "addCategory"));
+
+    g_signal_connect(
+            G_OBJECT(closeButton), "clicked", G_CALLBACK(close_window), window);
+    g_signal_connect(
+            G_OBJECT(addButton),
+            "clicked",
+            G_CALLBACK(add_category_window),
+            data);
+    gtk_widget_show(window);
+}
+
+void add_category_click(GtkWidget* widget, gpointer user_data)
+{
+    (void)widget;
+    GUI* data = (GUI*)user_data;
+    read_buffer(
+            data->builder_window_category,
+            "textViewA",
+            data->task.category_name);
+    int err = add_category(&data->task);
+    if (err) {
+        show_error(err);
+    }
+}
+
+void add_category_window(GtkWidget* widget, gpointer user_data)
+{
+    (void)widget;
+    GUI* data = (GUI*)user_data;
+    GtkBuilder* builder;
+    builder = gtk_builder_new();
+    gtk_builder_add_from_file(
+            builder, "src/GUI/categoryeditWindow.glade", NULL);
+    data->builder_window_category = builder;
+
+    GtkWidget* addWindow
+            = GTK_WIDGET(gtk_builder_get_object(builder, "addWindow"));
+    GtkButton* closeButton
+            = GTK_BUTTON(gtk_builder_get_object(builder, "addButton"));
+    g_signal_connect(
+            G_OBJECT(closeButton),
+            "clicked",
+            G_CALLBACK(close_window),
+            addWindow);
+    GtkButton* addButton
+            = GTK_BUTTON(gtk_builder_get_object(builder, "categoryButton"));
+    g_signal_connect(
+            G_OBJECT(addButton),
+            "clicked",
+            G_CALLBACK(add_category_click),
+            data);
+    g_signal_connect(
+            G_OBJECT(addButton),
+            "clicked",
+            G_CALLBACK(close_window),
+            addWindow);
+    gtk_widget_show(addWindow);
 }
 
 void show_error(int err)

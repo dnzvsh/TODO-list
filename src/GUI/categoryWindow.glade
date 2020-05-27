@@ -299,7 +299,7 @@
     <property name="stock">gtk-undo</property>
     <property name="icon_size">6</property>
   </object>
-  <object class="GtkWindow">
+  <object class="GtkWindow" id="categoryWindow">
     <property name="name">Выбор категории</property>
     <property name="can_focus">False</property>
     <property name="resizable">False</property>

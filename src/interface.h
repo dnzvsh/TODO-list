@@ -16,6 +16,7 @@ typedef struct {
     int index;
     int action;
     GtkBuilder* builder_window;
+    GtkBuilder* builder_window_category;
 } GUI;
 
 void read_labels(
@@ -29,7 +30,7 @@ void update_main_window(GUI* data);
 
 void add_task_click(GtkWidget* widget, gpointer user_data);
 
-int open_add_window(GtkWidget* widget, gpointer data);
+void open_add_window(GtkWidget* widget, gpointer data);
 
 int open_view_window(GtkWidget* widget, gpointer data);
 
@@ -40,5 +41,9 @@ void update_task_click(GtkWidget* widget, gpointer user_data);
 void show_error(int err);
 
 int task_score(sqlite3* db);
+
+void open_category_window(GtkWidget* widget, gpointer user_data);
+
+void add_category_window(GtkWidget* widget, gpointer user_data);
 
 #endif
