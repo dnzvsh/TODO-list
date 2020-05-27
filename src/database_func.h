@@ -38,8 +38,6 @@ int show_task(sqlite3* db, char label_main[][1000], char label_date[][26]);
 
 int update_task(Task_data* data);
 
-void parse_error(int err);
-
 int delete_task(Task_data* data);
 
 int add_task(Task_data* data);
@@ -51,5 +49,7 @@ int bind_category_for_task(Task_data* data);
 int delete_category(Task_data* data);
 
 int update_category(Task_data* data);
+
+int task_score(sqlite3* db);
 
 #endif

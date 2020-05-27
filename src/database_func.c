@@ -136,6 +136,17 @@ int bind_category_for_task(Task_data* data)
     return 0;
 }
 
+int task_score(sqlite3* db)
+{
+    sqlite3_stmt* stmt;
+    int j = 0;
+    sqlite3_prepare_v2(db, "select Task from TODO;", -1, &stmt, NULL);
+    while (sqlite3_step(stmt) != SQLITE_DONE) {
+        j++;
+    }
+    return j;
+}
+
 int show_task(sqlite3* db, char label_main[][1000], char label_date[][26])
 {
     sqlite3_stmt* stmt;
@@ -148,49 +159,4 @@ int show_task(sqlite3* db, char label_main[][1000], char label_date[][26])
     }
     sqlite3_finalize(stmt);
     return j;
-}
-
-void parse_error(int err)
-{
-    switch (err) {
-    case -1:
-        printf("Ошибка в запросе\n");
-        break;
-    case -2:
-        printf("Ошибка при добавлении задания\n");
-        break;
-    case -3:
-        printf("Добавление пустого задания!\n");
-        break;
-    case -4:
-        printf("Ошибка при удалении задания\n");
-        break;
-    case -5:
-        printf("Обновление на пустое задание!\n");
-        break;
-    case -6:
-        printf("Ошибка при обновлении задания!\n");
-        break;
-    case -7:
-        printf("Ошибка открытия бд\n");
-        break;
-    case -8:
-        printf("Добавление пустой категории!\n");
-        break;
-    case -9:
-        printf("Ошибка при добавлении категории\n");
-        break;
-    case -10:
-        printf("Ошибка при добавлении категории к задаче");
-        break;
-    case -11:
-        printf("Ошибка при удалении категории\n");
-        break;
-    case -12:
-        printf("Ошибка при обновлении пустой категории\n");
-        break;
-    case -13:
-        printf("Ошибка при обновлении категории\n");
-        break;
-    }
 }

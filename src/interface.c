@@ -50,8 +50,8 @@ void update_main_window(GUI* data)
     }
     char l_date[12] = "labelTime";
     char l_main[15] = "labelM";
-    filling_label(data, i, " ", l_main);
-    filling_label(data, i, " ", l_date);
+    filling_label(data, i, "\0", l_main);
+    filling_label(data, i, "\0", l_date);
 }
 
 void show_task_on_add(GtkWidget* widget, gpointer user_data)
@@ -59,6 +59,20 @@ void show_task_on_add(GtkWidget* widget, gpointer user_data)
     (void)widget;
     GUI* data = user_data;
     update_main_window(data);
+}
+
+void update_edit_button_status(GtkWidget* widget, gpointer user_data)
+{
+    (void)widget;
+    GUI* data = (GUI*)user_data;
+    int len = task_score(data->task.db);
+    char tm[14] = "editButton";
+    char t[3];
+    snprintf(t, 3, "%d", len);
+    strcat(tm, t);
+    GtkButton* button_edit
+            = GTK_BUTTON(gtk_builder_get_object(data->builder, tm));
+    gtk_widget_set_sensitive((GtkWidget*)button_edit, TRUE);
 }
 
 int open_add_window(GtkWidget* widget, gpointer user_data)
@@ -78,6 +92,12 @@ int open_add_window(GtkWidget* widget, gpointer user_data)
             G_OBJECT(button), "clicked", G_CALLBACK(add_task_click), data);
     g_signal_connect(
             G_OBJECT(button), "clicked", G_CALLBACK(show_task_on_add), data);
+    g_signal_connect(
+            G_OBJECT(button),
+            "clicked",
+            G_CALLBACK(update_edit_button_status),
+            data);
+
     GtkWidget* window
             = GTK_WIDGET(gtk_builder_get_object(builder, "addWindow"));
     g_signal_connect(
@@ -93,7 +113,10 @@ void add_task_click(GtkWidget* widget, gpointer user_data)
     (void)widget;
     GUI* data = (GUI*)user_data;
     read_buffer(data->builder_window, "textViewA", data->task.task);
-    add_task(&data->task);
+    int err = add_task(&data->task);
+    if (err) {
+        show_error(err);
+    }
 }
 
 void delete_task_click(GtkWidget* widget, gpointer user_data)
@@ -108,7 +131,10 @@ void update_task_click(GtkWidget* widget, gpointer user_data)
     (void)widget;
     GUI* data = (GUI*)user_data;
     read_buffer(data->builder_window, "textViewV", data->task.task);
-    update_task(&data->task);
+    int err = update_task(&data->task);
+    if (err) {
+        show_error(err);
+    }
 }
 
 void read_labels(
@@ -121,7 +147,6 @@ void read_labels(
     label_main
             = GTK_LABEL(gtk_builder_get_object(interface->builder, label_name));
     strcpy(interface->task.task, (char*)gtk_label_get_text(label_main));
-
     strcpy(label_name, "labelTime");
     strcat(label_name, tmp);
     label_date
@@ -140,10 +165,8 @@ void initialize_buffer_view(GtkBuilder* builder, GUI* data)
     gtk_text_buffer_set_text(buffer, data->task.task, -1);
 }
 
-void initialize_edit_button(GtkWidget* widget, gpointer user_data)
+void initialize_edit_button(GUI* interface)
 {
-    (void)widget;
-    GUI* interface = (GUI*)user_data;
     GtkButton* button_edit;
     char tm[14] = "editButton";
     char t[3];
@@ -153,11 +176,50 @@ void initialize_edit_button(GtkWidget* widget, gpointer user_data)
     GtkLabel label_main;
     GtkLabel label_date;
     read_labels(&label_main, &label_date, interface->index, interface);
+    if (interface->action == DELETE_TASK) {
+        gtk_widget_set_sensitive((GtkWidget*)button_edit, FALSE);
+    } else {
+        gtk_widget_set_sensitive((GtkWidget*)button_edit, TRUE);
+    }
     if (interface->rc != 0) {
         g_signal_handler_disconnect(button_edit, interface->rc);
     }
     interface->rc = g_signal_connect(
             button_edit, "clicked", G_CALLBACK(open_view_window), interface);
+}
+
+void open_error_window(char* error)
+{
+    GtkBuilder* builder;
+    builder = gtk_builder_new();
+    gtk_builder_add_from_file(builder, "src/GUI/errorWindow.glade", NULL);
+    GtkWidget* window
+            = GTK_WIDGET(gtk_builder_get_object(builder, "errorWindow"));
+    gtk_widget_show(window);
+    GtkLabel* label = GTK_LABEL(gtk_builder_get_object(builder, "errorLabel"));
+    gtk_label_set_text(label, error);
+    GtkButton* button
+            = GTK_BUTTON(gtk_builder_get_object(builder, "errorButton"));
+    g_signal_connect(
+            G_OBJECT(button), "clicked", G_CALLBACK(close_window), window);
+    g_signal_connect(
+            G_OBJECT(button), "destroy", G_CALLBACK(close_window), window);
+}
+
+void update_main_window_on_delete(GtkWidget* widget, gpointer user_data)
+{
+    (void)widget;
+    GUI* data = (GUI*)user_data;
+    data->action = DELETE_TASK;
+    initialize_edit_button(data);
+}
+
+void update_main_window_on_edit(GtkWidget* widget, gpointer user_data)
+{
+    (void)widget;
+    GUI* data = (GUI*)user_data;
+    data->action = EDIT_TASK;
+    initialize_edit_button(data);
 }
 
 int open_view_window(GtkWidget* widget, gpointer user_data)
@@ -178,7 +240,7 @@ int open_view_window(GtkWidget* widget, gpointer user_data)
     g_signal_connect(
             G_OBJECT(delete_button),
             "clicked",
-            G_CALLBACK(initialize_edit_button),
+            G_CALLBACK(update_main_window_on_delete),
             data);
     g_signal_connect(
             G_OBJECT(delete_button),
@@ -200,7 +262,7 @@ int open_view_window(GtkWidget* widget, gpointer user_data)
     g_signal_connect(
             G_OBJECT(edit_button),
             "clicked",
-            G_CALLBACK(initialize_edit_button),
+            G_CALLBACK(update_main_window_on_edit),
             data);
     g_signal_connect(
             G_OBJECT(edit_button),
@@ -216,4 +278,49 @@ int open_view_window(GtkWidget* widget, gpointer user_data)
             G_OBJECT(edit_button), "clicked", G_CALLBACK(close_window), window);
     gtk_widget_show(window);
     return 0;
+}
+
+void show_error(int err)
+{
+    switch (err) {
+    case -1:
+        open_error_window("Ошибка в запросе\n");
+        break;
+    case -2:
+        open_error_window("Ошибка при добавлении задания\n");
+        break;
+    case -3:
+        open_error_window("Добавление пустого задания!\n");
+        break;
+    case -4:
+        open_error_window("Ошибка при удалении задания\n");
+        break;
+    case -5:
+        open_error_window("Обновление на пустое задание!\n");
+        break;
+    case -6:
+        open_error_window("Ошибка при обновлении задания!\n");
+        break;
+    case -7:
+        open_error_window("Ошибка открытия бд\n");
+        break;
+    case -8:
+        open_error_window("Добавление пустой категории!\n");
+        break;
+    case -9:
+        open_error_window("Ошибка при добавлении категории\n");
+        break;
+    case -10:
+        open_error_window("Ошибка при добавлении категории к задаче");
+        break;
+    case -11:
+        open_error_window("Ошибка при удалении категории\n");
+        break;
+    case -12:
+        open_error_window("Ошибка при обновлении пустой категории\n");
+        break;
+    case -13:
+        open_error_window("Ошибка при обновлении категории\n");
+        break;
+    }
 }

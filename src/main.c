@@ -50,12 +50,9 @@ int main(int argc, char** argv)
             G_CALLBACK(open_add_window),
             &main_window);
     GUI edit_button[20];
-
     for (int j = 0; j < 20; j++) {
         edit_button[j].task.db = db;
         edit_button[j].builder = builder;
-        GtkLabel l_main;
-        GtkLabel l_date;
         GtkButton* button_edit;
         char tm[14] = "editButton";
         char t[3];
@@ -63,11 +60,17 @@ int main(int argc, char** argv)
         strcat(tm, t);
         button_edit
                 = GTK_BUTTON(gtk_builder_get_object(edit_button->builder, tm));
-        GtkLabel* label_main = &l_main;
-        GtkLabel* label_date = &l_date;
+        GtkLabel label_main;
+        GtkLabel label_date;
         edit_button[j].index = j + 1;
         read_labels(
-                label_main, label_date, edit_button[j].index, &edit_button[j]);
+                &label_main,
+                &label_date,
+                edit_button[j].index,
+                &edit_button[j]);
+        if (strlen(edit_button[j].task.task) == 0) {
+            gtk_widget_set_sensitive((GtkWidget*)button_edit, FALSE);
+        }
         edit_button[j].rc = g_signal_connect(
                 button_edit,
                 "clicked",
