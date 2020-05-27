@@ -52,4 +52,6 @@ int update_category(Task_data* data);
 
 int task_score(sqlite3* db);
 
+int show_category(sqlite3* db, char label_main[][100]);
+
 #endif

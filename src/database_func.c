@@ -160,3 +160,17 @@ int show_task(sqlite3* db, char label_main[][1000], char label_date[][26])
     sqlite3_finalize(stmt);
     return j;
 }
+
+int show_category(sqlite3* db, char label_main[][100])
+{
+    sqlite3_stmt* stmt;
+    int j = 0;
+    sqlite3_prepare_v2(
+            db, "SELECT category_name FROM CATEGORIES;", -1, &stmt, NULL);
+    while (sqlite3_step(stmt) != SQLITE_DONE) {
+        strcpy(label_main[j], (char*)sqlite3_column_text(stmt, 0));
+        j++;
+    }
+    sqlite3_finalize(stmt);
+    return j;
+}
