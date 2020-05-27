@@ -82,7 +82,7 @@ void open_add_window(GtkWidget* widget, gpointer user_data)
     GtkBuilder* builder;
 
     GtkButton* AddButton;
-
+    data->is_main = IS_BIND;
     builder = gtk_builder_new();
     gtk_builder_add_from_file(builder, "src/GUI/addWindow.glade", NULL);
     data->builder_window = builder;
@@ -93,6 +93,11 @@ void open_add_window(GtkWidget* widget, gpointer user_data)
             G_OBJECT(AddButton), "clicked", G_CALLBACK(add_task_click), data);
     g_signal_connect(
             G_OBJECT(AddButton), "clicked", G_CALLBACK(show_task_on_add), data);
+    g_signal_connect(
+            G_OBJECT(AddButton),
+            "clicked",
+            G_CALLBACK(update_edit_button_status),
+            data);
     GtkWidget* window
             = GTK_WIDGET(gtk_builder_get_object(builder, "addWindow"));
     g_signal_connect(
@@ -286,7 +291,19 @@ void open_category_window(GtkWidget* widget, gpointer user_data)
     GtkBuilder* builder;
     builder = gtk_builder_new();
     gtk_builder_add_from_file(builder, "src/GUI/categoryWindow.glade", NULL);
-
+    if (data->is_main) {
+        int i = 1;
+        while (i <= 20) {
+            char tmp[15] = "selectButton";
+            char t[3];
+            snprintf(t, 3, "%d", i);
+            strcat(tmp, t);
+            GtkButton* button_bind
+                    = GTK_BUTTON(gtk_builder_get_object(builder, tmp));
+            gtk_widget_set_sensitive((GtkWidget*)button_bind, FALSE);
+            i++;
+        }
+    }
     GtkWidget* window
             = GTK_WIDGET(gtk_builder_get_object(builder, "categoryWindow"));
     GtkButton* closeButton

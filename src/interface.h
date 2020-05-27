@@ -8,6 +8,8 @@
 #define EDIT_TASK 101
 #define ADD_TASK 100
 #define DELETE_TASK 200
+#define IS_MAIN 10
+#define IS_BIND 0
 
 typedef struct {
     Task_data task;
@@ -17,6 +19,7 @@ typedef struct {
     int action;
     GtkBuilder* builder_window;
     GtkBuilder* builder_window_category;
+    int is_main;
 } GUI;
 
 void read_labels(

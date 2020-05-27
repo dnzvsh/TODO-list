@@ -8,7 +8,7 @@
 int main(int argc, char** argv)
 {
     GtkBuilder* builder;
-    GtkButton* addTaskButton;
+    GtkButton *addTaskButton, *CategoryButton;
     GtkWidget* window;
 
     sqlite3* db = 0;
@@ -35,11 +35,16 @@ int main(int argc, char** argv)
     gtk_builder_add_from_file(builder, "src/GUI/mainWindow.glade", NULL);
     addTaskButton = GTK_BUTTON(gtk_builder_get_object(builder, "addButtonM"));
     window = GTK_WIDGET(gtk_builder_get_object(builder, "mainWindow"));
+    CategoryButton
+            = GTK_BUTTON(gtk_builder_get_object(builder, "categoryButtonM"));
 
     GUI main_window;
     main_window.task.db = db;
     main_window.builder = builder;
-
+    GUI category;
+    category.task.db = db;
+    category.builder = builder;
+    category.is_main = IS_MAIN;
     update_main_window(&main_window);
 
     g_signal_connect(
@@ -49,6 +54,11 @@ int main(int argc, char** argv)
             "clicked",
             G_CALLBACK(open_add_window),
             &main_window);
+    g_signal_connect(
+            G_OBJECT(CategoryButton),
+            "clicked",
+            G_CALLBACK(open_category_window),
+            &category);
     GUI edit_button[20];
     for (int j = 0; j < 20; j++) {
         edit_button[j].task.db = db;
