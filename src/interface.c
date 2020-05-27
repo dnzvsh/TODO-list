@@ -50,8 +50,8 @@ void update_main_window(GUI* data)
     }
     char l_date[12] = "labelTime";
     char l_main[15] = "labelM";
-    filling_label(data, i, " ", l_main);
-    filling_label(data, i, " ", l_date);
+    filling_label(data, i, "\0", l_main);
+    filling_label(data, i, "\0", l_date);
 }
 
 void show_task_on_add(GtkWidget* widget, gpointer user_data)
@@ -59,6 +59,20 @@ void show_task_on_add(GtkWidget* widget, gpointer user_data)
     (void)widget;
     GUI* data = user_data;
     update_main_window(data);
+}
+
+void update_edit_button_status(GtkWidget* widget, gpointer user_data)
+{
+    (void)widget;
+    GUI* data = (GUI*)user_data;
+    int len = task_score(data->task.db);
+    char tm[14] = "editButton";
+    char t[3];
+    snprintf(t, 3, "%d", len);
+    strcat(tm, t);
+    GtkButton* button_edit
+            = GTK_BUTTON(gtk_builder_get_object(data->builder, tm));
+    gtk_widget_set_sensitive((GtkWidget*)button_edit, TRUE);
 }
 
 int open_add_window(GtkWidget* widget, gpointer user_data)
@@ -78,6 +92,12 @@ int open_add_window(GtkWidget* widget, gpointer user_data)
             G_OBJECT(button), "clicked", G_CALLBACK(add_task_click), data);
     g_signal_connect(
             G_OBJECT(button), "clicked", G_CALLBACK(show_task_on_add), data);
+    g_signal_connect(
+            G_OBJECT(button),
+            "clicked",
+            G_CALLBACK(update_edit_button_status),
+            data);
+
     GtkWidget* window
             = GTK_WIDGET(gtk_builder_get_object(builder, "addWindow"));
     g_signal_connect(
@@ -127,7 +147,6 @@ void read_labels(
     label_main
             = GTK_LABEL(gtk_builder_get_object(interface->builder, label_name));
     strcpy(interface->task.task, (char*)gtk_label_get_text(label_main));
-
     strcpy(label_name, "labelTime");
     strcat(label_name, tmp);
     label_date
@@ -146,10 +165,8 @@ void initialize_buffer_view(GtkBuilder* builder, GUI* data)
     gtk_text_buffer_set_text(buffer, data->task.task, -1);
 }
 
-void initialize_edit_button(GtkWidget* widget, gpointer user_data)
+void initialize_edit_button(GUI* interface)
 {
-    (void)widget;
-    GUI* interface = (GUI*)user_data;
     GtkButton* button_edit;
     char tm[14] = "editButton";
     char t[3];
@@ -159,6 +176,11 @@ void initialize_edit_button(GtkWidget* widget, gpointer user_data)
     GtkLabel label_main;
     GtkLabel label_date;
     read_labels(&label_main, &label_date, interface->index, interface);
+    if (interface->action == DELETE_TASK) {
+        gtk_widget_set_sensitive((GtkWidget*)button_edit, FALSE);
+    } else {
+        gtk_widget_set_sensitive((GtkWidget*)button_edit, TRUE);
+    }
     if (interface->rc != 0) {
         g_signal_handler_disconnect(button_edit, interface->rc);
     }
@@ -184,6 +206,22 @@ void open_error_window(char* error)
             G_OBJECT(button), "destroy", G_CALLBACK(close_window), window);
 }
 
+void update_main_window_on_delete(GtkWidget* widget, gpointer user_data)
+{
+    (void)widget;
+    GUI* data = (GUI*)user_data;
+    data->action = DELETE_TASK;
+    initialize_edit_button(data);
+}
+
+void update_main_window_on_edit(GtkWidget* widget, gpointer user_data)
+{
+    (void)widget;
+    GUI* data = (GUI*)user_data;
+    data->action = EDIT_TASK;
+    initialize_edit_button(data);
+}
+
 int open_view_window(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
@@ -202,7 +240,7 @@ int open_view_window(GtkWidget* widget, gpointer user_data)
     g_signal_connect(
             G_OBJECT(delete_button),
             "clicked",
-            G_CALLBACK(initialize_edit_button),
+            G_CALLBACK(update_main_window_on_delete),
             data);
     g_signal_connect(
             G_OBJECT(delete_button),
@@ -224,7 +262,7 @@ int open_view_window(GtkWidget* widget, gpointer user_data)
     g_signal_connect(
             G_OBJECT(edit_button),
             "clicked",
-            G_CALLBACK(initialize_edit_button),
+            G_CALLBACK(update_main_window_on_edit),
             data);
     g_signal_connect(
             G_OBJECT(edit_button),
