@@ -162,20 +162,6 @@ void get_task_id(Task_data* data)
     data->task_id = (int)sqlite3_column_int(stmt, 0);
 }
 
-void get_task_category_id(Task_data* data)
-{
-    sqlite3_stmt* stmt;
-    sqlite3_prepare_v2(
-            data->db,
-            "select category_id from TODO WHERE Date = ?;",
-            -1,
-            &stmt,
-            NULL);
-    sqlite3_bind_text(stmt, 1, data->date, -1, NULL);
-    sqlite3_step(stmt);
-    data->task_category_id = (int)sqlite3_column_int(stmt, 0);
-}
-
 int bind_category_for_task(Task_data* data)
 {
     data->argv[0] = CATEGORY;
@@ -250,18 +236,18 @@ int show_task_with_category(
 {
     sqlite3_stmt* stmt;
     int j = 0;
+    get_category_id(data);
     sqlite3_prepare_v2(
-            data->db,
-            "select Task,Date from TODO WHERE ? = ?;",
-            -1,
-            &stmt,
-            NULL);
+         data->db,
+        "select Task,Date from TODO where category_id = ?;",
+        -1,
+        &stmt,
+        NULL);
     sqlite3_bind_int(stmt, 1, data->category_id);
-    sqlite3_bind_int(stmt, 2, data->task_category_id);
     while (sqlite3_step(stmt) != SQLITE_DONE) {
-        strcpy(label_main[j], (char*)sqlite3_column_text(stmt, 0));
-        strcpy(label_date[j], (char*)sqlite3_column_text(stmt, 1));
-        j++;
+    strcpy(label_main[j], (char)sqlite3_column_text(stmt, 0));
+    strcpy(label_date[j], (char)sqlite3_column_text(stmt, 1));
+    j++;
     }
     sqlite3_finalize(stmt);
     return j;
