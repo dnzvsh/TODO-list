@@ -88,30 +88,12 @@ void open_main_window(sqlite3* db)
     GtkButton* DisplayCategoryBindButton
             = GTK_BUTTON(gtk_builder_get_object(builder, "dateButtonM"));
 
-    GUI* main_window = malloc(sizeof(GUI));
-    main_window->task.db = db;
-    main_window->builder = builder;
+    GUI* edit_button = malloc(sizeof(GUI) * 20);
+    edit_button[0].task.db = db;
+    edit_button[0].builder = builder;
+    GUI* main_window = &edit_button[0];
     main_window->is_main = IS_MAIN;
     update_main_window(main_window);
-
-    g_signal_connect(
-            G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
-    g_signal_connect(
-            G_OBJECT(addTaskButton),
-            "clicked",
-            G_CALLBACK(open_add_window),
-            main_window);
-    g_signal_connect(
-            G_OBJECT(CategoryButton),
-            "clicked",
-            G_CALLBACK(open_category_window),
-            main_window);
-    g_signal_connect(
-            G_OBJECT(DisplayCategoryBindButton),
-            "clicked",
-            G_CALLBACK(open_task_sort_category_window),
-            main_window);
-    GUI* edit_button = malloc(sizeof(GUI) * 20);
     for (int j = 0; j < 20; j++) {
         edit_button[j].task.db = db;
         edit_button[j].builder = builder;
@@ -139,6 +121,24 @@ void open_main_window(sqlite3* db)
                 G_CALLBACK(open_view_window),
                 &edit_button[j]);
     }
+
+    g_signal_connect(
+            G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+    g_signal_connect(
+            G_OBJECT(addTaskButton),
+            "clicked",
+            G_CALLBACK(open_add_window),
+            main_window);
+    g_signal_connect(
+            G_OBJECT(CategoryButton),
+            "clicked",
+            G_CALLBACK(open_category_window),
+            main_window);
+    g_signal_connect(
+            G_OBJECT(DisplayCategoryBindButton),
+            "clicked",
+            G_CALLBACK(open_task_sort_category_window),
+            main_window);
     gtk_widget_show(window);
 }
 
