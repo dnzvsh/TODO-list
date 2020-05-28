@@ -26,13 +26,17 @@ int sql_request(Task_data* data)
             sqlite3_bind_text(stmt, i, data->category_name, -1, NULL);
             i++;
         } else {
-            sqlite3_bind_int(stmt, i, data->task_id);
-            i++;
             sqlite3_bind_int(stmt, i, data->category_id);
+            i++;
+            sqlite3_bind_int(stmt, i, data->task_id);
         }
     }
     int err = sqlite3_step(stmt);
     if (err != SQLITE_DONE) {
+        if (err == SQLITE_CONSTRAINT) {
+            sqlite3_finalize(stmt);
+            return -15;
+        }
         sqlite3_finalize(stmt);
         return -1;
     }
@@ -107,6 +111,9 @@ int delete_category(Task_data* data)
     strcpy(data->sql, "DELETE FROM CATEGORIES WHERE category_name = ?;");
     int err = sql_request(data);
     if (err) {
+        if (err == -15) {
+            return -15;
+        }
         return -11;
     }
     return 0;
@@ -166,9 +173,7 @@ int bind_category_for_task(Task_data* data)
     if (data->category_id == 0 || data->task_id == 0) {
         return -14;
     }
-    strcpy(data->sql,
-           "SELECT * FROM TODO INNER JOIN CATEGORIES ON (?) = "
-           "(?);"); //сначала таск_ид, потом категори_ид
+    strcpy(data->sql, "UPDATE TODO SET category_id = ? WHERE task_id = ?");
     int err = sql_request(data);
     if (err) {
         return -10;

@@ -5,12 +5,11 @@
 
 #define TODO                                                                  \
     "PRAGMA foreign_keys=on;CREATE TABLE IF NOT EXISTS TODO(task_id integer " \
-    "primary key "                                                            \
-    "autoincrement, Task TEXT, Date TEXT);"
+    "primary key autoincrement, category_id integer, Task TEXT, Date "        \
+    "TEXT,Foreign key (category_id) References CATEGORIES(category_id));"
 #define CATEGORIES                                                           \
     "CREATE TABLE IF NOT EXISTS CATEGORIES(category_id integer primary key " \
-    "autoincrement, task_id integer,category_name TEXT,Foreign key "         \
-    "(task_id) References TODO(task_id));"
+    "autoincrement, category_name TEXT);"
 
 #define TASK 10
 #define CATEGORY 20

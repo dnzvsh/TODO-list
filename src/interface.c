@@ -302,23 +302,28 @@ void delete_category_click(GtkWidget* widget, gpointer user_data)
     char tm2[18] = "editButton";
     snprintf(t, 3, "%d", data->number_button_category);
     char tmp[18] = "categoryLabel";
+    char tmp2[18] = "selectButton";
     strcat(tmp, t);
-
     GtkLabel* label = GTK_LABEL(
             gtk_builder_get_object(data->builder_window_category, tmp));
     strcpy(data->task.category_name, (char*)gtk_label_get_text(label));
     snprintf(t, 3, "%d", category_score(data->task.db));
     strcat(tm, t);
     strcat(tm2, t);
+    strcat(tmp2, t);
     GtkButton* db = GTK_BUTTON(
             gtk_builder_get_object(data->builder_window_category, tm));
+    GtkButton* sb = GTK_BUTTON(
+            gtk_builder_get_object(data->builder_window_category, tmp2));
     GtkButton* eb = GTK_BUTTON(
             gtk_builder_get_object(data->builder_window_category, tm2));
-    gtk_widget_set_sensitive((GtkWidget*)db, FALSE);
-    gtk_widget_set_sensitive((GtkWidget*)eb, FALSE);
     int err = delete_category(&data->task);
     if (err) {
         show_error(err);
+    } else {
+        gtk_widget_set_sensitive((GtkWidget*)db, FALSE);
+        gtk_widget_set_sensitive((GtkWidget*)eb, FALSE);
+        gtk_widget_set_sensitive((GtkWidget*)sb, FALSE);
     }
     update_category_window(data);
 }
@@ -528,7 +533,8 @@ void add_category_click(GtkWidget* widget, gpointer user_data)
             gtk_builder_get_object(data->builder_window_category, tm2));
     gtk_widget_set_sensitive((GtkWidget*)db, TRUE);
     gtk_widget_set_sensitive((GtkWidget*)eb, TRUE);
-    gtk_widget_set_sensitive((GtkWidget*)sb, TRUE);
+    if (!data->is_main)
+        gtk_widget_set_sensitive((GtkWidget*)sb, TRUE);
 }
 
 void add_category_window(GtkWidget* widget, gpointer user_data)
@@ -634,6 +640,9 @@ void show_error(int err)
         break;
     case -14:
         open_error_window("Ошибка при связывании задания\n");
+        break;
+    case -15:
+        open_error_window("Нельзя удалить категорию, связанную с задачами!\n");
         break;
     }
 }
