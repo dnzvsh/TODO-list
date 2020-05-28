@@ -666,6 +666,20 @@ void show_category_on_add(GtkWidget* widget, gpointer user_data)
     update_category_window(data);
 }
 
+void open_task_sort_category_window(GtkWidget* widget, gpointer user_data)
+{
+    (void)widget;
+    GUI* data = (GUI*)user_data;
+    GtkBuilder* builder = gtk_builder_new();
+    gtk_builder_add_from_file(
+            builder, "src/GUI/categoryForTaskWindow.glade", NULL);
+    data->builder_window = builder;
+    GtkWidget* window
+            = GTK_WIDGET(gtk_builder_get_object(builder, "categoryForTask"));
+
+    gtk_widget_show(window);
+}
+
 void show_error(int err)
 {
     switch (err) {
