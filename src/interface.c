@@ -313,6 +313,20 @@ void delete_category_click(GtkWidget* widget, gpointer user_data)
     update_category_window(data);
 }
 
+void edit_button_click(GtkWidget* widget, gpointer user_data)
+{
+    (void)widget;
+    GUI* data = (GUI*)user_data;
+    read_buffer(
+            data->builder_add_window_category,
+            "textViewA",
+            data->task.new_category_name);
+    int err = update_category(&data->task);
+    if (err) {
+        show_error(err);
+    }
+    update_category_window(data);
+}
 
 void open_category_window(GtkWidget* widget, gpointer user_data)
 {
