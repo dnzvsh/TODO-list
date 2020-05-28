@@ -374,6 +374,16 @@ void edit_category_window(GtkWidget* widget, gpointer user_data)
     gtk_widget_show(editWindow);
 }
 
+void close_window_category(GtkWidget* widget, gpointer user_data)
+{
+    (void)widget;
+    GUI* data = (GUI*)user_data;
+    GtkWidget* window = GTK_WIDGET(gtk_builder_get_object(
+            data[0].builder_window_category, "categoryWindow"));
+    free(data);
+    gtk_widget_hide(window);
+}
+
 void open_category_window(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
@@ -437,7 +447,7 @@ void open_category_window(GtkWidget* widget, gpointer user_data)
             = GTK_BUTTON(gtk_builder_get_object(builder, "addCategory"));
 
     g_signal_connect(
-            G_OBJECT(closeButton), "clicked", G_CALLBACK(close_window), window);
+            G_OBJECT(closeButton), "clicked", G_CALLBACK(close_window_category), delete_button);
     g_signal_connect(
             G_OBJECT(addButton),
             "clicked",
