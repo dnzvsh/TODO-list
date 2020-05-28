@@ -83,7 +83,6 @@ int update_task(Task_data* data)
     strcpy(data->sql, "UPDATE TODO SET Task = ? WHERE Date = ?;");
     int err = sql_request(data);
     if (err) {
-        g_print("error\n");
         return -6;
     }
     return 0;
@@ -169,7 +168,7 @@ int bind_category_for_task(Task_data* data)
     data->argv[1] = CATEGORY_BIND;
     get_category_id(data);
     get_task_id(data);
-    printf("%d %d\n", data->category_id, data->task_id);
+    // printf("%d %d\n", data->category_id, data->task_id);
     if (data->category_id == 0 || data->task_id == 0) {
         return -14;
     }

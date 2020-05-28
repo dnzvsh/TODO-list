@@ -7,10 +7,6 @@
 
 int main(int argc, char** argv)
 {
-    GtkBuilder* builder;
-    GtkButton *addTaskButton, *CategoryButton;
-    GtkWidget* window;
-
     sqlite3* db = 0;
     char* error = 0;
     if (sqlite3_open("src/database.db", &db)) {
@@ -31,63 +27,8 @@ int main(int argc, char** argv)
 
     gtk_init(&argc, &argv);
 
-    builder = gtk_builder_new();
-    gtk_builder_add_from_file(builder, "src/GUI/mainWindow.glade", NULL);
-    addTaskButton = GTK_BUTTON(gtk_builder_get_object(builder, "addButtonM"));
-    window = GTK_WIDGET(gtk_builder_get_object(builder, "mainWindow"));
-    CategoryButton
-            = GTK_BUTTON(gtk_builder_get_object(builder, "categoryButtonM"));
+    open_main_window(db);
 
-    GUI main_window;
-    main_window.task.db = db;
-    main_window.builder = builder;
-    GUI category;
-    category.task.db = db;
-    category.builder = builder;
-    category.is_main = IS_MAIN;
-    update_main_window(&main_window);
-
-    g_signal_connect(
-            G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
-    g_signal_connect(
-            G_OBJECT(addTaskButton),
-            "clicked",
-            G_CALLBACK(open_add_window),
-            &main_window);
-    g_signal_connect(
-            G_OBJECT(CategoryButton),
-            "clicked",
-            G_CALLBACK(open_category_window),
-            &category);
-    GUI edit_button[20];
-    for (int j = 0; j < 20; j++) {
-        edit_button[j].task.db = db;
-        edit_button[j].builder = builder;
-        GtkButton* button_edit;
-        char tm[14] = "editButton";
-        char t[3];
-        snprintf(t, 3, "%d", j + 1);
-        strcat(tm, t);
-        button_edit
-                = GTK_BUTTON(gtk_builder_get_object(edit_button->builder, tm));
-        GtkLabel label_main;
-        GtkLabel label_date;
-        edit_button[j].index = j + 1;
-        read_labels(
-                &label_main,
-                &label_date,
-                edit_button[j].index,
-                &edit_button[j]);
-        if (strlen(edit_button[j].task.task) == 0) {
-            gtk_widget_set_sensitive((GtkWidget*)button_edit, FALSE);
-        }
-        edit_button[j].rc = g_signal_connect(
-                button_edit,
-                "clicked",
-                G_CALLBACK(open_view_window),
-                &edit_button[j]);
-    }
-    gtk_widget_show(window);
     gtk_main();
     sqlite3_close(db);
     return 0;

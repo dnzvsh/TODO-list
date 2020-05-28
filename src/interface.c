@@ -74,6 +74,74 @@ void update_edit_button_status(GtkWidget* widget, gpointer user_data)
     gtk_widget_set_sensitive((GtkWidget*)button_edit, TRUE);
 }
 
+void open_main_window(sqlite3* db)
+{
+    GtkBuilder* builder;
+    GtkButton *addTaskButton, *CategoryButton;
+    GtkWidget* window;
+    builder = gtk_builder_new();
+    gtk_builder_add_from_file(builder, "src/GUI/mainWindow.glade", NULL);
+    addTaskButton = GTK_BUTTON(gtk_builder_get_object(builder, "addButtonM"));
+    window = GTK_WIDGET(gtk_builder_get_object(builder, "mainWindow"));
+    CategoryButton
+            = GTK_BUTTON(gtk_builder_get_object(builder, "categoryButtonM"));
+    GtkButton* DisplayCategoryBindButton
+            = GTK_BUTTON(gtk_builder_get_object(builder, "dateButtonM"));
+
+    GUI* main_window = malloc(sizeof(GUI));
+    main_window->task.db = db;
+    main_window->builder = builder;
+    main_window->is_main = IS_MAIN;
+    update_main_window(main_window);
+
+    g_signal_connect(
+            G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+    g_signal_connect(
+            G_OBJECT(addTaskButton),
+            "clicked",
+            G_CALLBACK(open_add_window),
+            main_window);
+    g_signal_connect(
+            G_OBJECT(CategoryButton),
+            "clicked",
+            G_CALLBACK(open_category_window),
+            main_window);
+    g_signal_connect(
+            G_OBJECT(DisplayCategoryBindButton),
+            "clicked",
+            G_CALLBACK(open_task_sort_category_window),
+            main_window);
+    GUI* edit_button = malloc(sizeof(GUI) * 20);
+    for (int j = 0; j < 20; j++) {
+        edit_button[j].task.db = db;
+        edit_button[j].builder = builder;
+        GtkButton* button_edit;
+        char tm[14] = "editButton";
+        char t[3];
+        snprintf(t, 3, "%d", j + 1);
+        strcat(tm, t);
+        button_edit
+                = GTK_BUTTON(gtk_builder_get_object(edit_button->builder, tm));
+        GtkLabel label_main;
+        GtkLabel label_date;
+        edit_button[j].index = j + 1;
+        read_labels(
+                &label_main,
+                &label_date,
+                edit_button[j].index,
+                &edit_button[j]);
+        if (strlen(edit_button[j].task.task) == 0) {
+            gtk_widget_set_sensitive((GtkWidget*)button_edit, FALSE);
+        }
+        edit_button[j].rc = g_signal_connect(
+                button_edit,
+                "clicked",
+                G_CALLBACK(open_view_window),
+                &edit_button[j]);
+    }
+    gtk_widget_show(window);
+}
+
 void open_add_window(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
@@ -85,6 +153,7 @@ void open_add_window(GtkWidget* widget, gpointer user_data)
     builder = gtk_builder_new();
     gtk_builder_add_from_file(builder, "src/GUI/addWindow.glade", NULL);
     data->builder_window = builder;
+    data->task.category_name[0] = '\0';
     AddButton = GTK_BUTTON(gtk_builder_get_object(builder, "addButtonA"));
     GtkButton* CategoryButton
             = GTK_BUTTON(gtk_builder_get_object(builder, "categoryButtonA"));
@@ -126,6 +195,7 @@ void add_task_click(GtkWidget* widget, gpointer user_data)
             show_error(error);
         }
     }
+    data->task.category_name[0] = '\0';
 }
 
 void delete_task_click(GtkWidget* widget, gpointer user_data)

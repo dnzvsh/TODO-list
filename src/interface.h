@@ -68,4 +68,6 @@ void edit_button_click(GtkWidget* widget, gpointer user_data);
 
 void edit_category_window(GtkWidget* widget, gpointer user_data);
 
+void open_main_window(sqlite3* db);
+
 #endif
