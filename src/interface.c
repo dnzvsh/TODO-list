@@ -328,6 +328,52 @@ void edit_button_click(GtkWidget* widget, gpointer user_data)
     update_category_window(data);
 }
 
+void edit_category_window(GtkWidget* widget, gpointer user_data)
+{
+    (void)widget;
+    GUI* data = (GUI*)user_data;
+    char t[3];
+    snprintf(t, 3, "%d", data->number_button_category);
+    char tmp[18] = "categoryLabel";
+    strcat(tmp, t);
+    GtkLabel* label = GTK_LABEL(
+            gtk_builder_get_object(data->builder_window_category, tmp));
+    strcpy(data->task.category_name, (char*)gtk_label_get_text(label));
+
+    GtkBuilder* builder = gtk_builder_new();
+    gtk_builder_add_from_file(
+            builder, "src/GUI/categoryeditWindow.glade", NULL);
+    data->builder_add_window_category = builder;
+    GtkTextBuffer* buffer;
+    buffer = gtk_text_view_get_buffer(
+            GTK_TEXT_VIEW(gtk_builder_get_object(builder, "textViewA")));
+    gtk_text_buffer_set_text(buffer, data->task.category_name, -1);
+
+    GtkWidget* editWindow
+            = GTK_WIDGET(gtk_builder_get_object(builder, "addWindow"));
+    GtkButton* closeButton
+            = GTK_BUTTON(gtk_builder_get_object(builder, "addButton"));
+    g_signal_connect(
+            G_OBJECT(closeButton),
+            "clicked",
+            G_CALLBACK(close_window),
+            editWindow);
+
+    GtkButton* editButton
+            = GTK_BUTTON(gtk_builder_get_object(builder, "categoryButton"));
+    g_signal_connect(
+            G_OBJECT(editButton),
+            "clicked",
+            G_CALLBACK(edit_button_click),
+            data);
+    g_signal_connect(
+            G_OBJECT(editButton),
+            "clicked",
+            G_CALLBACK(close_window),
+            editWindow);
+    gtk_widget_show(editWindow);
+}
+
 void open_category_window(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;

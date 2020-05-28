@@ -58,4 +58,6 @@ void delete_category_click(GtkWidget* widget, gpointer user_data);
 
 void edit_button_click(GtkWidget* widget, gpointer user_data);
 
+void edit_category_window(GtkWidget* widget, gpointer user_data);
+
 #endif
