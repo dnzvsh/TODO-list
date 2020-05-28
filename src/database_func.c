@@ -147,6 +147,18 @@ int task_score(sqlite3* db)
     return j;
 }
 
+int category_score(sqlite3* db)
+{
+    sqlite3_stmt* stmt;
+    int j = 0;
+    sqlite3_prepare_v2(
+            db, "select category_name from CATEGORIES;", -1, &stmt, NULL);
+    while (sqlite3_step(stmt) != SQLITE_DONE) {
+        j++;
+    }
+    return j;
+}
+
 int show_task(sqlite3* db, char label_main[][1000], char label_date[][26])
 {
     sqlite3_stmt* stmt;

@@ -50,6 +50,8 @@ int delete_category(Task_data* data);
 
 int update_category(Task_data* data);
 
+int category_score(sqlite3* db);
+
 int task_score(sqlite3* db);
 
 int show_category(sqlite3* db, char label_main[][100]);
