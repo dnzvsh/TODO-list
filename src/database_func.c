@@ -98,6 +98,9 @@ int add_category(Task_data* data)
     }
     int err = sql_request(data);
     if (err) {
+        if (err == -15) {
+            return -16;
+        }
         return -9;
     }
     return 0;
