@@ -3,13 +3,13 @@
 
 #define DATABASE_PATH "src/database.db"
 
-#define TODO                                                       \
-    "CREATE TABLE IF NOT EXISTS TODO(task_id integer primary key " \
-    "autoincrement, Task TEXT, Date TEXT);"
+#define TODO                                                                  \
+    "PRAGMA foreign_keys=on;CREATE TABLE IF NOT EXISTS TODO(task_id integer " \
+    "primary key autoincrement, category_id integer, Task TEXT, Date "        \
+    "TEXT,Foreign key (category_id) References CATEGORIES(category_id));"
 #define CATEGORIES                                                           \
     "CREATE TABLE IF NOT EXISTS CATEGORIES(category_id integer primary key " \
-    "autoincrement, task_id integer,category_name TEXT,Foreign key "         \
-    "(category_id) References TODO(task_id));"
+    "autoincrement, category_name TEXT);"
 
 #define TASK 10
 #define CATEGORY 20
@@ -32,6 +32,9 @@ typedef struct {
     char category_name[100];
     char new_category_name[100];
     int argv[2];
+    int category_id;
+    int task_id;
+    int task_category_id;
 } Task_data;
 
 int show_task(sqlite3* db, char label_main[][1000], char label_date[][26]);
@@ -50,6 +53,13 @@ int delete_category(Task_data* data);
 
 int update_category(Task_data* data);
 
+int category_score(sqlite3* db);
+
 int task_score(sqlite3* db);
+
+int show_category(sqlite3* db, char label_main[][100]);
+
+int show_task_with_category(
+        Task_data* data, char label_main[][1000], char label_date[][26]);
 
 #endif
