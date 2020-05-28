@@ -666,6 +666,30 @@ void show_category_on_add(GtkWidget* widget, gpointer user_data)
     update_category_window(data);
 }
 
+void show_task_category_click(GtkWidget* widget, gpointer user_data)
+{
+    (void)widget;
+    GUI* data = (GUI*)user_data;
+    char tm[17] = "categoryLabel";
+    char t[3];
+    snprintf(t, 3, "%d", data->index);
+    strcat(tm, t);
+    GtkLabel* label
+            = GTK_LABEL(gtk_builder_get_object(data->builder_window, tm));
+    strcpy(data->task.category_name, (char*)gtk_label_get_text(label));
+    printf("%s\n", data->task.category_name);
+}
+
+void close_window_task_category(GtkWidget* widget, gpointer user_data)
+{
+    (void)widget;
+    GUI* data = (GUI*)user_data;
+    GtkWidget* window = GTK_WIDGET(
+            gtk_builder_get_object(data[0].builder_window, "categoryForTask"));
+    free(data);
+    gtk_widget_hide(window);
+}
+
 void open_task_sort_category_window(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
@@ -676,6 +700,46 @@ void open_task_sort_category_window(GtkWidget* widget, gpointer user_data)
     data->builder_window = builder;
     GtkWidget* window
             = GTK_WIDGET(gtk_builder_get_object(builder, "categoryForTask"));
+    GtkButton* backButton
+            = GTK_BUTTON(gtk_builder_get_object(builder, "cancelButton"));
+
+    GUI* showButton = malloc(sizeof(GUI) * 20);
+    char labels_category[20][100];
+    for (int i = 0; i < 20; i++) {
+        labels_category[i][0] = '\0';
+    }
+    show_category(data->task.db, labels_category);
+    for (int i = 0; i < 20; i++) {
+        showButton[i].task.db = data->task.db;
+        showButton[i].builder_window = builder;
+        showButton[i].index = i + 1;
+        char tmp[16] = "selectButton";
+        char tm[17] = "categoryLabel";
+        char t[3];
+        snprintf(t, 3, "%d", i + 1);
+        strcat(tmp, t);
+        strcat(tm, t);
+        GtkButton* ShowB = GTK_BUTTON(gtk_builder_get_object(builder, tmp));
+        GtkLabel* label = GTK_LABEL(gtk_builder_get_object(builder, tm));
+        if (strlen(labels_category[i]) != 0) {
+            gtk_label_set_text(label, labels_category[i]);
+        }
+
+        if (i >= category_score(data->task.db)) {
+            gtk_widget_set_sensitive((GtkWidget*)ShowB, FALSE);
+        }
+        g_signal_connect(
+                G_OBJECT(ShowB),
+                "clicked",
+                G_CALLBACK(show_task_category_click),
+                &showButton[i]);
+    }
+
+    g_signal_connect(
+            G_OBJECT(backButton),
+            "clicked",
+            G_CALLBACK(close_window_task_category),
+            showButton);
 
     gtk_widget_show(window);
 }
