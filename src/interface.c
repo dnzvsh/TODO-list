@@ -283,6 +283,37 @@ int open_view_window(GtkWidget* widget, gpointer user_data)
     return 0;
 }
 
+void delete_category_click(GtkWidget* widget, gpointer user_data)
+{
+    (void)widget;
+    GUI* data = (GUI*)user_data;
+    char t[3];
+    char tm[18] = "deleteButton";
+    char tm2[18] = "editButton";
+    snprintf(t, 3, "%d", data->number_button_category);
+    char tmp[18] = "categoryLabel";
+    strcat(tmp, t);
+
+    GtkLabel* label = GTK_LABEL(
+            gtk_builder_get_object(data->builder_window_category, tmp));
+    strcpy(data->task.category_name, (char*)gtk_label_get_text(label));
+    snprintf(t, 3, "%d", category_score(data->task.db));
+    strcat(tm, t);
+    strcat(tm2, t);
+    GtkButton* db = GTK_BUTTON(
+            gtk_builder_get_object(data->builder_window_category, tm));
+    GtkButton* eb = GTK_BUTTON(
+            gtk_builder_get_object(data->builder_window_category, tm2));
+    gtk_widget_set_sensitive((GtkWidget*)db, FALSE);
+    gtk_widget_set_sensitive((GtkWidget*)eb, FALSE);
+    int err = delete_category(&data->task);
+    if (err) {
+        show_error(err);
+    }
+    update_category_window(data);
+}
+
+
 void open_category_window(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
@@ -304,7 +335,39 @@ void open_category_window(GtkWidget* widget, gpointer user_data)
             i++;
         }
     }
+    int i = 0;
+
     update_category_window(data);
+    GUI* delete_button = malloc(sizeof(GUI) * 20);
+    int j = category_score(data->task.db);
+    while (i < 20) {
+        char tm[15] = "deleteButton";
+        char tmp[15] = "editButton";
+        char t[3];
+        snprintf(t, 3, "%d", i + 1);
+        strcat(tm, t);
+        strcat(tmp, t);
+        GtkButton* delbut = GTK_BUTTON(gtk_builder_get_object(builder, tm));
+        GtkButton* editbut = GTK_BUTTON(gtk_builder_get_object(builder, tmp));
+        if (i >= j) {
+            gtk_widget_set_sensitive((GtkWidget*)delbut, FALSE);
+            gtk_widget_set_sensitive((GtkWidget*)editbut, FALSE);
+        }
+        delete_button[i].task.db = data->task.db;
+        delete_button[i].number_button_category = i + 1;
+        delete_button[i].builder_window_category = builder;
+        g_signal_connect(
+                G_OBJECT(delbut),
+                "clicked",
+                G_CALLBACK(delete_category_click),
+                &delete_button[i]);
+        g_signal_connect(
+                G_OBJECT(editbut),
+                "clicked",
+                G_CALLBACK(edit_category_window),
+                &delete_button[i]);
+        i++;
+    }
     GtkWidget* window
             = GTK_WIDGET(gtk_builder_get_object(builder, "categoryWindow"));
     GtkButton* closeButton
@@ -335,6 +398,18 @@ void add_category_click(GtkWidget* widget, gpointer user_data)
     if (err) {
         show_error(err);
     }
+    char t[3];
+    char tm[18] = "deleteButton";
+    char tmp[18] = "editButton";
+    snprintf(t, 3, "%d", category_score(data->task.db));
+    strcat(tm, t);
+    strcat(tmp, t);
+    GtkButton* db = GTK_BUTTON(
+            gtk_builder_get_object(data->builder_window_category, tm));
+    GtkButton* eb = GTK_BUTTON(
+            gtk_builder_get_object(data->builder_window_category, tmp));
+    gtk_widget_set_sensitive((GtkWidget*)db, TRUE);
+    gtk_widget_set_sensitive((GtkWidget*)eb, TRUE);
 }
 
 void add_category_window(GtkWidget* widget, gpointer user_data)

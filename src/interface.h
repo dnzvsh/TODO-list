@@ -54,4 +54,6 @@ void update_category_window(GUI* data);
 
 void show_category_on_add(GtkWidget* widget, gpointer user_data);
 
+void delete_category_click(GtkWidget* widget, gpointer user_data);
+
 #endif
