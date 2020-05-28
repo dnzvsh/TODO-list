@@ -9,7 +9,7 @@
     "TEXT,Foreign key (category_id) References CATEGORIES(category_id));"
 #define CATEGORIES                                                           \
     "CREATE TABLE IF NOT EXISTS CATEGORIES(category_id integer primary key " \
-    "autoincrement, category_name TEXT);"
+    "autoincrement, category_name TEXT UNIQUE);"
 
 #define TASK 10
 #define CATEGORY 20

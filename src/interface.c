@@ -792,5 +792,8 @@ void show_error(int err)
     case -15:
         open_error_window("Нельзя удалить категорию, связанную с задачами!\n");
         break;
+    case -16:
+        open_error_window("Категория с таким названием уже есть!\n");
+        break;
     }
 }
