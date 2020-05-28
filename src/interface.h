@@ -10,6 +10,8 @@
 #define DELETE_TASK 200
 #define IS_MAIN 10
 #define IS_BIND 0
+#define DELETE_CATEGORY 200
+#define EDIT_CATEGORY 201
 
 typedef struct {
     Task_data task;
@@ -21,6 +23,7 @@ typedef struct {
     GtkBuilder* builder_window_category;
     GtkBuilder* builder_add_window_category;
     int is_main;
+    int number_button_category;
 } GUI;
 
 void read_labels(
