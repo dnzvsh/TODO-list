@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.2 -->
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <object class="GtkWindow" id="taskForCategory">
+    <property name="can_focus">False</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel" id="labelTask1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="width_chars">50</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="labelTask2">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="width_chars">50</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="labelTask3">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="width_chars">50</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="labelTask4">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="width_chars">50</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="labelTask5">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="width_chars">50</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="labelTask6">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="width_chars">50</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="labelTask7">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="width_chars">50</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">6</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="labelTask8">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="width_chars">50</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">7</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="labelTask9">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="width_chars">50</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">8</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="labelTask10">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="width_chars">50</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">9</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="labelTask11">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="width_chars">50</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">10</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="labelTask12">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="width_chars">50</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">11</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="labelTask13">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="width_chars">50</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">12</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="labelTask14">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="width_chars">50</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">13</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="labelTask15">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="width_chars">50</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">14</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="labelTask16">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="width_chars">50</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">15</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="labelTask17">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="width_chars">50</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">16</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="labelTask18">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="width_chars">50</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">17</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="labelTask19">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="width_chars">50</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">18</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="labelTask20">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="width_chars">50</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">19</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="cancelButtonTask">
+            <property name="label" translatable="yes">Назад</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">20</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
