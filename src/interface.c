@@ -120,6 +120,12 @@ void add_task_click(GtkWidget* widget, gpointer user_data)
     if (err) {
         show_error(err);
     }
+    if (strlen(data->task.category_name) != 0) {
+        int error = bind_category_for_task(&data->task);
+        if (error) {
+            show_error(error);
+        }
+    }
 }
 
 void delete_task_click(GtkWidget* widget, gpointer user_data)
@@ -172,6 +178,7 @@ void initialize_edit_button(GUI* interface)
 {
     GtkButton* button_edit;
     char tm[14] = "editButton";
+    char tmp[14] = "editButton";
     char t[3];
     snprintf(t, 3, "%d", interface->index);
     strcat(tm, t);
@@ -179,10 +186,13 @@ void initialize_edit_button(GUI* interface)
     GtkLabel label_main;
     GtkLabel label_date;
     read_labels(&label_main, &label_date, interface->index, interface);
+    snprintf(t, 3, "%d", task_score(interface->task.db));
+    strcat(tmp, t);
+    GtkButton* be = GTK_BUTTON(gtk_builder_get_object(interface->builder, tmp));
     if (interface->action == DELETE_TASK) {
-        gtk_widget_set_sensitive((GtkWidget*)button_edit, FALSE);
+        gtk_widget_set_sensitive((GtkWidget*)be, FALSE);
     } else {
-        gtk_widget_set_sensitive((GtkWidget*)button_edit, TRUE);
+        gtk_widget_set_sensitive((GtkWidget*)be, TRUE);
     }
     if (interface->rc != 0) {
         g_signal_handler_disconnect(button_edit, interface->rc);
@@ -384,6 +394,27 @@ void close_window_category(GtkWidget* widget, gpointer user_data)
     gtk_widget_hide(window);
 }
 
+void bind_category_task_click(GUI* data)
+{
+    char t[3];
+    snprintf(t, 3, "%d", data->number_button_category);
+    char tmp[18] = "categoryLabel";
+    strcat(tmp, t);
+    data->task.category_name[0] = '\0';
+    GtkLabel* label = GTK_LABEL(
+            gtk_builder_get_object(data->builder_window_category, tmp));
+    strcpy(data->task.category_name, (char*)gtk_label_get_text(label));
+}
+
+void bind_click(GtkWidget* widget, gpointer user_data)
+{
+    (void)widget;
+    Bind* data = (Bind*)user_data;
+    data->bind_data->number_button_category
+            = data->button->number_button_category;
+    bind_category_task_click(data->bind_data);
+}
+
 void open_category_window(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
@@ -406,26 +437,34 @@ void open_category_window(GtkWidget* widget, gpointer user_data)
         }
     }
     int i = 0;
-
+    GtkWidget* window
+            = GTK_WIDGET(gtk_builder_get_object(builder, "categoryWindow"));
     update_category_window(data);
     GUI* delete_button = malloc(sizeof(GUI) * 20);
     int j = category_score(data->task.db);
     while (i < 20) {
         char tm[15] = "deleteButton";
+        char tm2[16] = "selectButton";
         char tmp[15] = "editButton";
         char t[3];
         snprintf(t, 3, "%d", i + 1);
         strcat(tm, t);
+        strcat(tm2, t);
         strcat(tmp, t);
         GtkButton* delbut = GTK_BUTTON(gtk_builder_get_object(builder, tm));
+        GtkButton* selbut = GTK_BUTTON(gtk_builder_get_object(builder, tm2));
         GtkButton* editbut = GTK_BUTTON(gtk_builder_get_object(builder, tmp));
         if (i >= j) {
             gtk_widget_set_sensitive((GtkWidget*)delbut, FALSE);
+            gtk_widget_set_sensitive((GtkWidget*)selbut, FALSE);
             gtk_widget_set_sensitive((GtkWidget*)editbut, FALSE);
         }
         delete_button[i].task.db = data->task.db;
         delete_button[i].number_button_category = i + 1;
         delete_button[i].builder_window_category = builder;
+        Bind* d = malloc(sizeof(Bind));
+        d->bind_data = data;
+        d->button = &delete_button[i];
         g_signal_connect(
                 G_OBJECT(delbut),
                 "clicked",
@@ -436,10 +475,12 @@ void open_category_window(GtkWidget* widget, gpointer user_data)
                 "clicked",
                 G_CALLBACK(edit_category_window),
                 &delete_button[i]);
+        g_signal_connect(
+                G_OBJECT(selbut), "clicked", G_CALLBACK(bind_click), d);
+        g_signal_connect(
+                G_OBJECT(selbut), "clicked", G_CALLBACK(close_window), window);
         i++;
     }
-    GtkWidget* window
-            = GTK_WIDGET(gtk_builder_get_object(builder, "categoryWindow"));
     GtkButton* closeButton
             = GTK_BUTTON(gtk_builder_get_object(builder, "cancelButton"));
 
@@ -447,7 +488,10 @@ void open_category_window(GtkWidget* widget, gpointer user_data)
             = GTK_BUTTON(gtk_builder_get_object(builder, "addCategory"));
 
     g_signal_connect(
-            G_OBJECT(closeButton), "clicked", G_CALLBACK(close_window_category), delete_button);
+            G_OBJECT(closeButton),
+            "clicked",
+            G_CALLBACK(close_window_category),
+            delete_button);
     g_signal_connect(
             G_OBJECT(addButton),
             "clicked",
@@ -470,16 +514,21 @@ void add_category_click(GtkWidget* widget, gpointer user_data)
     }
     char t[3];
     char tm[18] = "deleteButton";
+    char tm2[18] = "selectButton";
     char tmp[18] = "editButton";
     snprintf(t, 3, "%d", category_score(data->task.db));
     strcat(tm, t);
+    strcat(tm2, t);
     strcat(tmp, t);
     GtkButton* db = GTK_BUTTON(
             gtk_builder_get_object(data->builder_window_category, tm));
     GtkButton* eb = GTK_BUTTON(
             gtk_builder_get_object(data->builder_window_category, tmp));
+    GtkButton* sb = GTK_BUTTON(
+            gtk_builder_get_object(data->builder_window_category, tm2));
     gtk_widget_set_sensitive((GtkWidget*)db, TRUE);
     gtk_widget_set_sensitive((GtkWidget*)eb, TRUE);
+    gtk_widget_set_sensitive((GtkWidget*)sb, TRUE);
 }
 
 void add_category_window(GtkWidget* widget, gpointer user_data)
@@ -582,6 +631,9 @@ void show_error(int err)
         break;
     case -13:
         open_error_window("Ошибка при обновлении категории\n");
+        break;
+    case -14:
+        open_error_window("Ошибка при связывании задания\n");
         break;
     }
 }

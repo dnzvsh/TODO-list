@@ -26,6 +26,11 @@ typedef struct {
     int number_button_category;
 } GUI;
 
+typedef struct {
+    GUI* bind_data;
+    GUI* button;
+} Bind;
+
 void read_labels(
         GtkLabel* label_main, GtkLabel* label_date, int num, GUI* interface);
 

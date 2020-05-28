@@ -18,12 +18,18 @@ int sql_request(Task_data* data)
         }
     }
     if (data->argv[0] == CATEGORY) {
-        if (data->argv[1] == CATEGORY_UPDATE) {
-            sqlite3_bind_text(stmt, i, data->new_category_name, -1, NULL);
+        if (data->argv[1] != CATEGORY_BIND) {
+            if (data->argv[1] == CATEGORY_UPDATE) {
+                sqlite3_bind_text(stmt, i, data->new_category_name, -1, NULL);
+                i++;
+            }
+            sqlite3_bind_text(stmt, i, data->category_name, -1, NULL);
             i++;
+        } else {
+            sqlite3_bind_int(stmt, i, data->task_id);
+            i++;
+            sqlite3_bind_int(stmt, i, data->category_id);
         }
-        sqlite3_bind_text(stmt, i, data->category_name, -1, NULL);
-        i++;
     }
     int err = sqlite3_step(stmt);
     if (err != SQLITE_DONE) {
@@ -122,13 +128,47 @@ int update_category(Task_data* data)
     return 0;
 }
 
+void get_category_id(Task_data* data)
+{
+    sqlite3_stmt* stmt;
+    sqlite3_prepare_v2(
+            data->db,
+            "SELECT category_id FROM CATEGORIES WHERE category_name = ?;",
+            -1,
+            &stmt,
+            NULL);
+    sqlite3_bind_text(stmt, 1, data->category_name, -1, NULL);
+    sqlite3_step(stmt);
+    data->category_id = (int)sqlite3_column_int(stmt, 0);
+}
+
+void get_task_id(Task_data* data)
+{
+    sqlite3_stmt* stmt;
+    sqlite3_prepare_v2(
+            data->db,
+            "select task_id from TODO WHERE Date = ?;",
+            -1,
+            &stmt,
+            NULL);
+    sqlite3_bind_text(stmt, 1, data->date, -1, NULL);
+    sqlite3_step(stmt);
+    data->task_id = (int)sqlite3_column_int(stmt, 0);
+}
+
 int bind_category_for_task(Task_data* data)
 {
     data->argv[0] = CATEGORY;
     data->argv[1] = CATEGORY_BIND;
+    get_category_id(data);
+    get_task_id(data);
+    printf("%d %d\n", data->category_id, data->task_id);
+    if (data->category_id == 0 || data->task_id == 0) {
+        return -14;
+    }
     strcpy(data->sql,
-           "SELECT * FROM TODO INNER JOIN CATEGORIES ON (task_id) = "
-           "(category_id);");
+           "SELECT * FROM TODO INNER JOIN CATEGORIES ON (?) = "
+           "(?);"); //сначала таск_ид, потом категори_ид
     int err = sql_request(data);
     if (err) {
         return -10;
