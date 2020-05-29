@@ -12,6 +12,13 @@
 #define IS_BIND 0
 #define DELETE_CATEGORY 200
 #define EDIT_CATEGORY 201
+#define MAX_COUNT 20
+#define MAX_CHAR_TASK 1000
+#define MAX_CHAR_DATA 26
+#define MAX_CHAR_BUTTON 18
+#define MAX_CHAR_LABEL 100
+#define MAX_CHAR_LABEL_TIME 12
+#define MAX_CHAR_LABEL_MAIN 15
 
 typedef struct {
     Task_data task;

@@ -13,7 +13,7 @@ char* define_name_widget(char* name, int id)
     return name;
 }
 
-void read_buffer(GtkBuilder* builder, char* text_id, char* text)
+void read_buffer(GtkBuilder* builder, char* text_id, char* text, int type_label)
 {
     GtkTextBuffer* buffer;
     GtkTextIter start;
@@ -22,8 +22,27 @@ void read_buffer(GtkBuilder* builder, char* text_id, char* text)
             GTK_TEXT_VIEW((gtk_builder_get_object(builder, text_id))));
     gtk_text_buffer_get_start_iter(buffer, &start);
     gtk_text_buffer_get_end_iter(buffer, &end);
-
-    strcpy(text, (char*)gtk_text_buffer_get_text(buffer, &start, &end, FALSE));
+    if (type_label == 1) {
+        if (strlen((char*)gtk_text_buffer_get_text(buffer, &start, &end, FALSE))
+            >= MAX_CHAR_LABEL) {
+            show_error(-19);
+            text[0] = '\0';
+        } else {
+            strcpy(text,
+                   (char*)gtk_text_buffer_get_text(
+                           buffer, &start, &end, FALSE));
+        }
+    } else {
+        if (strlen((char*)gtk_text_buffer_get_text(buffer, &start, &end, FALSE))
+            >= MAX_CHAR_TASK) {
+            show_error(-20);
+            text[0] = '\0';
+        } else {
+            strcpy(text,
+                   (char*)gtk_text_buffer_get_text(
+                           buffer, &start, &end, FALSE));
+        }
+    }
 }
 
 void close_window(GtkWidget* widget, gpointer user_data)
@@ -42,20 +61,20 @@ void filling_label(GtkBuilder* builder, int id, char* task, char* label_type)
 
 void update_main_window(GUI* data)
 {
-    char label_main[20][1000];
-    char label_date[20][26];
+    char label_main[MAX_COUNT][MAX_CHAR_TASK];
+    char label_date[MAX_COUNT][MAX_CHAR_DATA];
     int j = show_task(data->task.db, label_main, label_date);
     int i = 0;
     while (i < j) {
-        char l_date[12] = "labelTime";
-        char l_main[15] = "labelM";
+        char l_date[MAX_CHAR_LABEL_TIME] = "labelTime";
+        char l_main[MAX_CHAR_LABEL_MAIN] = "labelM";
         filling_label(data->builder, i, label_main[i], l_main);
         filling_label(data->builder, i, label_date[i], l_date);
         i++;
     }
-    if (i < 20) {
-        char l_date[12] = "labelTime";
-        char l_main[15] = "labelM";
+    if (i < MAX_COUNT) {
+        char l_date[MAX_CHAR_LABEL_TIME] = "labelTime";
+        char l_main[MAX_CHAR_LABEL_MAIN] = "labelM";
         filling_label(data->builder, i, "\0", l_main);
         filling_label(data->builder, i, "\0", l_date);
     }
@@ -73,7 +92,7 @@ void update_edit_button_status(GtkWidget* widget, gpointer user_data)
     (void)widget;
     GUI* data = (GUI*)user_data;
     int len = task_score(data->task.db);
-    char button_name[14] = "editButton";
+    char button_name[MAX_CHAR_BUTTON] = "editButton";
     GtkButton* button_edit = GTK_BUTTON(gtk_builder_get_object(
             data->builder, define_name_widget(button_name, len)));
     gtk_widget_set_sensitive((GtkWidget*)button_edit, TRUE);
@@ -93,17 +112,17 @@ void open_main_window(sqlite3* db)
     GtkButton* DisplayCategoryBindButton
             = GTK_BUTTON(gtk_builder_get_object(builder, "dateButtonM"));
 
-    GUI* edit_button = malloc(sizeof(GUI) * 20);
+    GUI* edit_button = malloc(sizeof(GUI) * MAX_COUNT);
     edit_button[0].task.db = db;
     edit_button[0].builder = builder;
     GUI* main_window = &edit_button[0];
     main_window->is_main = IS_MAIN;
     update_main_window(main_window);
-    for (int j = 0; j < 20; j++) {
+    for (int j = 0; j < MAX_COUNT; j++) {
         edit_button[j].task.db = db;
         edit_button[j].builder = builder;
         GtkButton* button_edit;
-        char button_name[14] = "editButton";
+        char button_name[MAX_CHAR_BUTTON] = "editButton";
         button_edit = GTK_BUTTON(gtk_builder_get_object(
                 edit_button->builder, define_name_widget(button_name, j + 1)));
         GtkLabel label_main;
@@ -203,7 +222,7 @@ void add_task_click(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
     GUI* data = (GUI*)user_data;
-    read_buffer(data->builder_window, "textViewA", data->task.task);
+    read_buffer(data->builder_window, "textViewA", data->task.task, 0);
     int err = add_task(&data->task);
     if (err) {
         show_error(err);
@@ -228,7 +247,7 @@ void update_task_click(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
     GUI* data = (GUI*)user_data;
-    read_buffer(data->builder_window, "textViewV", data->task.task);
+    read_buffer(data->builder_window, "textViewV", data->task.task, 0);
     int err = update_task(&data->task);
     if (err) {
         show_error(err);
@@ -238,7 +257,7 @@ void update_task_click(GtkWidget* widget, gpointer user_data)
 void read_labels(
         GtkLabel* label_main, GtkLabel* label_date, int num, GUI* interface)
 {
-    char label_name[15] = "labelM";
+    char label_name[MAX_CHAR_LABEL_MAIN] = "labelM";
     label_main = GTK_LABEL(gtk_builder_get_object(
             interface->builder, define_name_widget(label_name, num)));
     strcpy(interface->task.task, (char*)gtk_label_get_text(label_main));
@@ -262,8 +281,8 @@ void initialize_buffer_view(GtkBuilder* builder, GUI* data)
 void initialize_edit_button(GUI* interface)
 {
     GtkButton* button_edit;
-    char edit_button1[14] = "editButton";
-    char edit_button2[14] = "editButton";
+    char edit_button1[MAX_CHAR_BUTTON] = "editButton";
+    char edit_button2[MAX_CHAR_BUTTON] = "editButton";
     button_edit = GTK_BUTTON(gtk_builder_get_object(
             interface->builder,
             define_name_widget(edit_button1, interface->index)));
@@ -381,10 +400,10 @@ void delete_category_click(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
     GUI* data = (GUI*)user_data;
-    char deleteButton[18] = "deleteButton";
-    char editButton[18] = "editButton";
-    char categoryLabel[18] = "categoryLabel";
-    char selectButton[18] = "selectButton";
+    char deleteButton[MAX_CHAR_BUTTON] = "deleteButton";
+    char editButton[MAX_CHAR_BUTTON] = "editButton";
+    char categoryLabel[MAX_CHAR_BUTTON] = "categoryLabel";
+    char selectButton[MAX_CHAR_BUTTON] = "selectButton";
     GtkLabel* label = GTK_LABEL(gtk_builder_get_object(
             data->builder_window_category,
             define_name_widget(categoryLabel, data->number_button_category)));
@@ -416,7 +435,8 @@ void edit_button_click(GtkWidget* widget, gpointer user_data)
     read_buffer(
             data->builder_add_window_category,
             "textViewA",
-            data->task.new_category_name);
+            data->task.new_category_name,
+            1);
     int err = update_category(&data->task);
     if (err) {
         show_error(err);
@@ -428,7 +448,7 @@ void edit_category_window(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
     GUI* data = (GUI*)user_data;
-    char categoryLabel[18] = "categoryLabel";
+    char categoryLabel[MAX_CHAR_BUTTON] = "categoryLabel";
     GtkLabel* label = GTK_LABEL(gtk_builder_get_object(
             data->builder_window_category,
             define_name_widget(categoryLabel, data->number_button_category)));
@@ -480,7 +500,7 @@ void close_window_category(GtkWidget* widget, gpointer user_data)
 
 void bind_category_task_click(GUI* data)
 {
-    char categoryLabel[18] = "categoryLabel";
+    char categoryLabel[MAX_CHAR_BUTTON] = "categoryLabel";
     data->task.category_name[0] = '\0';
     GtkLabel* label = GTK_LABEL(gtk_builder_get_object(
             data->builder_window_category,
@@ -507,8 +527,8 @@ void open_category_window(GtkWidget* widget, gpointer user_data)
     data->builder_window_category = builder;
     if (data->is_main) {
         int i = 1;
-        while (i <= 20) {
-            char selectButton[15] = "selectButton";
+        while (i <= MAX_COUNT) {
+            char selectButton[MAX_CHAR_LABEL_MAIN] = "selectButton";
             GtkButton* button_bind = GTK_BUTTON(gtk_builder_get_object(
                     builder, define_name_widget(selectButton, i)));
             gtk_widget_set_sensitive((GtkWidget*)button_bind, FALSE);
@@ -519,12 +539,12 @@ void open_category_window(GtkWidget* widget, gpointer user_data)
     GtkWidget* window
             = GTK_WIDGET(gtk_builder_get_object(builder, "categoryWindow"));
     update_category_window(data);
-    GUI* delete_button = malloc(sizeof(GUI) * 20);
+    GUI* delete_button = malloc(sizeof(GUI) * MAX_COUNT);
     int j = category_score(data->task.db);
-    while (i < 20) {
-        char deleteButton[15] = "deleteButton";
-        char selectButton[16] = "selectButton";
-        char editButton[15] = "editButton";
+    while (i < MAX_COUNT) {
+        char deleteButton[MAX_CHAR_BUTTON] = "deleteButton";
+        char selectButton[MAX_CHAR_BUTTON] = "selectButton";
+        char editButton[MAX_CHAR_BUTTON] = "editButton";
         GtkButton* delbut = GTK_BUTTON(gtk_builder_get_object(
                 builder, define_name_widget(deleteButton, i + 1)));
         GtkButton* selbut = GTK_BUTTON(gtk_builder_get_object(
@@ -584,14 +604,15 @@ void add_category_click(GtkWidget* widget, gpointer user_data)
     read_buffer(
             data->builder_add_window_category,
             "textViewA",
-            data->task.category_name);
+            data->task.category_name,
+            1);
     int err = add_category(&data->task);
     if (err) {
         show_error(err);
     }
-    char deleteButton[18] = "deleteButton";
-    char selectButton[18] = "selectButton";
-    char editButton[18] = "editButton";
+    char deleteButton[MAX_CHAR_BUTTON] = "deleteButton";
+    char selectButton[MAX_CHAR_BUTTON] = "selectButton";
+    char editButton[MAX_CHAR_BUTTON] = "editButton";
     GtkButton* db = GTK_BUTTON(gtk_builder_get_object(
             data->builder_window_category,
             define_name_widget(deleteButton, category_score(data->task.db))));
@@ -647,16 +668,16 @@ void add_category_window(GtkWidget* widget, gpointer user_data)
 
 void update_category_window(GUI* data)
 {
-    char label[20][100];
+    char label[MAX_COUNT][MAX_CHAR_LABEL];
     int j = show_category(data->task.db, label);
     int i = 0;
     while (i < j) {
-        char l_category[18] = "categoryLabel";
+        char l_category[MAX_CHAR_BUTTON] = "categoryLabel";
         filling_label(data->builder_window_category, i, label[i], l_category);
         i++;
     }
-    if (i < 20) {
-        char l_category[18] = "categoryLabel";
+    if (i < MAX_COUNT) {
+        char l_category[MAX_CHAR_BUTTON] = "categoryLabel";
         filling_label(data->builder_window_category, i, "\0", l_category);
     }
 }
@@ -672,7 +693,7 @@ void show_task_category_click(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
     GUI* data = (GUI*)user_data;
-    char categoryLabel[17] = "categoryLabel";
+    char categoryLabel[MAX_CHAR_BUTTON] = "categoryLabel";
     GtkLabel* label = GTK_LABEL(gtk_builder_get_object(
             data->builder_window,
             define_name_widget(categoryLabel, data->index)));
@@ -686,14 +707,14 @@ void show_task_category_click(GtkWidget* widget, gpointer user_data)
             = GTK_BUTTON(gtk_builder_get_object(builder, "cancelButtonTask"));
     g_signal_connect(
             G_OBJECT(closeButton), "clicked", G_CALLBACK(close_window), window);
-    char tasks[20][1000];
-    for (int i = 0; i < 20; i++) {
+    char tasks[MAX_COUNT][MAX_CHAR_TASK];
+    for (int i = 0; i < MAX_COUNT; i++) {
         tasks[i][0] = '\0';
     }
     show_task_with_category(&data->task, tasks);
     int i = 0;
     while (strlen(tasks[i])) {
-        char labelTask[13] = "labelTask";
+        char labelTask[MAX_CHAR_BUTTON] = "labelTask";
         GtkLabel* label = GTK_LABEL(gtk_builder_get_object(
                 builder, define_name_widget(labelTask, i + 1)));
         gtk_label_set_text(label, tasks[i]);
@@ -725,18 +746,18 @@ void open_task_sort_category_window(GtkWidget* widget, gpointer user_data)
     GtkButton* backButton
             = GTK_BUTTON(gtk_builder_get_object(builder, "cancelButton"));
 
-    GUI* showButton = malloc(sizeof(GUI) * 20);
-    char labels_category[20][100];
-    for (int i = 0; i < 20; i++) {
+    GUI* showButton = malloc(sizeof(GUI) * MAX_COUNT);
+    char labels_category[MAX_COUNT][MAX_CHAR_LABEL];
+    for (int i = 0; i < MAX_COUNT; i++) {
         labels_category[i][0] = '\0';
     }
     show_category(data->task.db, labels_category);
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < MAX_COUNT; i++) {
         showButton[i].task.db = data->task.db;
         showButton[i].builder_window = builder;
         showButton[i].index = i + 1;
-        char selectButton[16] = "selectButton";
-        char categoryLabel[17] = "categoryLabel";
+        char selectButton[MAX_CHAR_BUTTON] = "selectButton";
+        char categoryLabel[MAX_CHAR_BUTTON] = "categoryLabel";
         GtkButton* ShowB = GTK_BUTTON(gtk_builder_get_object(
                 builder, define_name_widget(selectButton, i + 1)));
         GtkLabel* label = GTK_LABEL(gtk_builder_get_object(
@@ -820,6 +841,14 @@ void show_error(int err)
         break;
     case -18:
         open_error_window("Уже добавлено максимальное кол-во заданий!\n");
+        break;
+    case -19:
+        open_error_window(
+                "Превышено максимальное количество символов для категории!\n");
+        break;
+    case -20:
+        open_error_window(
+                "Превышено максимальное количество символов для задания!\n");
         break;
     }
 }

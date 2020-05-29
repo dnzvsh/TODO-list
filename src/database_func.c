@@ -1,4 +1,5 @@
 #include "database_func.h"
+#include <interface.h>
 #include <stdio.h>
 #include <time.h>
 
@@ -46,7 +47,7 @@ int sql_request(Task_data* data)
 
 int add_task(Task_data* data)
 {
-    if (task_score(data->db) >= 20) {
+    if (task_score(data->db) >= MAX_COUNT) {
         return -18;
     }
     data->argv[0] = TASK;
@@ -93,7 +94,7 @@ int update_task(Task_data* data)
 
 int add_category(Task_data* data)
 {
-    if (category_score(data->db) >= 20) {
+    if (category_score(data->db) >= MAX_COUNT) {
         return -17;
     }
     data->argv[0] = CATEGORY;
@@ -212,7 +213,10 @@ int category_score(sqlite3* db)
     return j;
 }
 
-int show_task(sqlite3* db, char label_main[][1000], char label_date[][26])
+int show_task(
+        sqlite3* db,
+        char label_main[][MAX_CHAR_TASK],
+        char label_date[][MAX_CHAR_DATA])
 {
     sqlite3_stmt* stmt;
     int j = 0;
@@ -226,7 +230,7 @@ int show_task(sqlite3* db, char label_main[][1000], char label_date[][26])
     return j;
 }
 
-int show_category(sqlite3* db, char label_main[][100])
+int show_category(sqlite3* db, char label_main[][MAX_CHAR_LABEL])
 {
     sqlite3_stmt* stmt;
     int j = 0;
@@ -240,7 +244,7 @@ int show_category(sqlite3* db, char label_main[][100])
     return j;
 }
 
-int show_task_with_category(Task_data* data, char label_main[][1000])
+int show_task_with_category(Task_data* data, char label_main[][MAX_CHAR_TASK])
 {
     sqlite3_stmt* stmt;
     int j = 0;
