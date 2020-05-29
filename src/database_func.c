@@ -234,22 +234,20 @@ int show_category(sqlite3* db, char label_main[][100])
     return j;
 }
 
-int show_task_with_category(
-        Task_data* data, char label_main[][1000], char label_date[][26])
+int show_task_with_category(Task_data* data, char label_main[][1000])
 {
     sqlite3_stmt* stmt;
     int j = 0;
     get_category_id(data);
     sqlite3_prepare_v2(
             data->db,
-            "select Task,Date from TODO where category_id = ?;",
+            "select Task from TODO where category_id = ?;",
             -1,
             &stmt,
             NULL);
     sqlite3_bind_int(stmt, 1, data->category_id);
     while (sqlite3_step(stmt) != SQLITE_DONE) {
         strcpy(label_main[j], (char*)sqlite3_column_text(stmt, 0));
-        strcpy(label_date[j], (char*)sqlite3_column_text(stmt, 1));
         j++;
     }
     sqlite3_finalize(stmt);
