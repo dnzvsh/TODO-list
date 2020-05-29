@@ -27,7 +27,7 @@ void window_enabled(GtkBuilder* builder, char* widget_name)
     gtk_widget_set_sensitive(window, TRUE);
 }
 
-void read_buffer(GtkBuilder* builder, char* text_id, char* text, int type_label)
+int read_buffer(GtkBuilder* builder, char* text_id, char* text, int type_label)
 {
     GtkTextBuffer* buffer;
     GtkTextIter start;
@@ -41,6 +41,7 @@ void read_buffer(GtkBuilder* builder, char* text_id, char* text, int type_label)
             >= MAX_CHAR_LABEL) {
             show_error(-19);
             text[0] = '\0';
+            return -1;
         } else {
             strcpy(text,
                    (char*)gtk_text_buffer_get_text(
@@ -51,12 +52,14 @@ void read_buffer(GtkBuilder* builder, char* text_id, char* text, int type_label)
             >= MAX_CHAR_TASK) {
             show_error(-20);
             text[0] = '\0';
+            return -1;
         } else {
             strcpy(text,
                    (char*)gtk_text_buffer_get_text(
                            buffer, &start, &end, FALSE));
         }
     }
+    return 0;
 }
 
 void close_window(GtkWidget* widget, gpointer user_data)
@@ -238,18 +241,21 @@ void add_task_click(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
     GUI* data = (GUI*)user_data;
-    read_buffer(data->builder_window, "textViewA", data->task.task, 0);
-    int err = add_task(&data->task);
-    if (err) {
-        show_error(err);
-    }
-    if (strlen(data->task.category_name) != 0) {
-        int error = bind_category_for_task(&data->task);
-        if (error) {
-            show_error(error);
+    int err = read_buffer(
+            data->builder_window, "textViewA", data->task.task, 0);
+    if (!err) {
+        err = add_task(&data->task);
+        if (err) {
+            show_error(err);
         }
+        if (strlen(data->task.category_name) != 0) {
+            int error = bind_category_for_task(&data->task);
+            if (error) {
+                show_error(error);
+            }
+        }
+        data->task.category_name[0] = '\0';
     }
-    data->task.category_name[0] = '\0';
 }
 
 void delete_task_click(GtkWidget* widget, gpointer user_data)
@@ -264,12 +270,15 @@ void update_task_click(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
     GUI* data = (GUI*)user_data;
-    read_buffer(data->builder_window, "textViewV", data->task.task, 0);
-    int err = update_task(&data->task);
-    if (err) {
-        show_error(err);
+    int err = read_buffer(
+            data->builder_window, "textViewV", data->task.task, 0);
+    if (!err) {
+        err = update_task(&data->task);
+        if (err) {
+            show_error(err);
+        }
+        window_enabled(data->builder, "mainWindow");
     }
-    window_enabled(data->builder, "mainWindow");
 }
 
 void read_labels(
@@ -458,16 +467,18 @@ void edit_button_click(GtkWidget* widget, gpointer user_data)
 {
     (void)widget;
     GUI* data = (GUI*)user_data;
-    read_buffer(
+    int err = read_buffer(
             data->builder_add_window_category,
             "textViewA",
             data->task.new_category_name,
             1);
-    int err = update_category(&data->task);
-    if (err) {
-        show_error(err);
+    if (!err) {
+        err = update_category(&data->task);
+        if (err) {
+            show_error(err);
+        }
+        update_category_window(data);
     }
-    update_category_window(data);
 }
 
 void close_window_edit_category(GtkWidget* widget, gpointer user_data)
@@ -654,31 +665,35 @@ void add_category_click(GtkWidget* widget, gpointer user_data)
     (void)widget;
     GUI* data = (GUI*)user_data;
     window_enabled(data->builder_window_category, "categoryWindow");
-    read_buffer(
+    int err = read_buffer(
             data->builder_add_window_category,
             "textViewA",
             data->task.category_name,
             1);
-    int err = add_category(&data->task);
-    if (err) {
-        show_error(err);
+    if (!err) {
+        err = add_category(&data->task);
+        if (err) {
+            show_error(err);
+        }
+        char deleteButton[MAX_CHAR_BUTTON] = "deleteButton";
+        char selectButton[MAX_CHAR_BUTTON] = "selectButton";
+        char editButton[MAX_CHAR_BUTTON] = "editButton";
+        GtkButton* db = GTK_BUTTON(gtk_builder_get_object(
+                data->builder_window_category,
+                define_name_widget(
+                        deleteButton, category_score(data->task.db))));
+        GtkButton* eb = GTK_BUTTON(gtk_builder_get_object(
+                data->builder_window_category,
+                define_name_widget(editButton, category_score(data->task.db))));
+        GtkButton* sb = GTK_BUTTON(gtk_builder_get_object(
+                data->builder_window_category,
+                define_name_widget(
+                        selectButton, category_score(data->task.db))));
+        gtk_widget_set_sensitive((GtkWidget*)db, TRUE);
+        gtk_widget_set_sensitive((GtkWidget*)eb, TRUE);
+        if (!data->is_main)
+            gtk_widget_set_sensitive((GtkWidget*)sb, TRUE);
     }
-    char deleteButton[MAX_CHAR_BUTTON] = "deleteButton";
-    char selectButton[MAX_CHAR_BUTTON] = "selectButton";
-    char editButton[MAX_CHAR_BUTTON] = "editButton";
-    GtkButton* db = GTK_BUTTON(gtk_builder_get_object(
-            data->builder_window_category,
-            define_name_widget(deleteButton, category_score(data->task.db))));
-    GtkButton* eb = GTK_BUTTON(gtk_builder_get_object(
-            data->builder_window_category,
-            define_name_widget(editButton, category_score(data->task.db))));
-    GtkButton* sb = GTK_BUTTON(gtk_builder_get_object(
-            data->builder_window_category,
-            define_name_widget(selectButton, category_score(data->task.db))));
-    gtk_widget_set_sensitive((GtkWidget*)db, TRUE);
-    gtk_widget_set_sensitive((GtkWidget*)eb, TRUE);
-    if (!data->is_main)
-        gtk_widget_set_sensitive((GtkWidget*)sb, TRUE);
 }
 
 void close_window_add_category(GtkWidget* widget, gpointer user_data)
