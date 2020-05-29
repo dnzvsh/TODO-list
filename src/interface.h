@@ -60,8 +60,6 @@ void update_task_click(GtkWidget* widget, gpointer user_data);
 
 void show_error(int err);
 
-int task_score(sqlite3* db);
-
 void open_category_window(GtkWidget* widget, gpointer user_data);
 
 void add_category_window(GtkWidget* widget, gpointer user_data);
