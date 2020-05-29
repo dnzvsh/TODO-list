@@ -673,7 +673,29 @@ void show_task_category_click(GtkWidget* widget, gpointer user_data)
             data->builder_window,
             define_name_widget(categoryLabel, data->index)));
     strcpy(data->task.category_name, (char*)gtk_label_get_text(label));
-    printf("%s\n", data->task.category_name);
+    GtkBuilder* builder = gtk_builder_new();
+    gtk_builder_add_from_file(
+            builder, "src/GUI/taskForCategoryWindow.glade", NULL);
+    GtkWidget* window
+            = GTK_WIDGET(gtk_builder_get_object(builder, "taskForCategory"));
+    GtkButton* closeButton
+            = GTK_BUTTON(gtk_builder_get_object(builder, "cancelButtonTask"));
+    g_signal_connect(
+            G_OBJECT(closeButton), "clicked", G_CALLBACK(close_window), window);
+    char tasks[20][1000];
+    for (int i = 0; i < 20; i++) {
+        tasks[i][0] = '\0';
+    }
+    show_task_with_category(&data->task, tasks);
+    int i = 0;
+    while (strlen(tasks[i])) {
+        char labelTask[13] = "labelTask";
+        GtkLabel* label = GTK_LABEL(gtk_builder_get_object(
+                builder, define_name_widget(labelTask, i + 1)));
+        gtk_label_set_text(label, tasks[i]);
+        i++;
+    }
+    gtk_widget_show(window);
 }
 
 void close_window_task_category(GtkWidget* widget, gpointer user_data)

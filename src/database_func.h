@@ -59,7 +59,6 @@ int task_score(sqlite3* db);
 
 int show_category(sqlite3* db, char label_main[][100]);
 
-int show_task_with_category(
-        Task_data* data, char label_main[][1000], char label_date[][26]);
+int show_task_with_category(Task_data* data, char label_main[][1000]);
 
 #endif
