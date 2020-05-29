@@ -46,6 +46,9 @@ int sql_request(Task_data* data)
 
 int add_task(Task_data* data)
 {
+    if (task_score(data->db) >= 20) {
+        return -18;
+    }
     data->argv[0] = TASK;
     strcpy(data->sql, "INSERT INTO TODO (Task,Date) VALUES (?,?);");
     const time_t sec = time(NULL);
@@ -90,6 +93,9 @@ int update_task(Task_data* data)
 
 int add_category(Task_data* data)
 {
+    if (category_score(data->db) >= 20) {
+        return -17;
+    }
     data->argv[0] = CATEGORY;
     data->argv[1] = CATEGORY_ADD;
     strcpy(data->sql, "INSERT INTO CATEGORIES (category_name) VALUES (?);");
