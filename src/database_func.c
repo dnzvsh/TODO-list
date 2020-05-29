@@ -46,6 +46,9 @@ int sql_request(Task_data* data)
 
 int add_task(Task_data* data)
 {
+    if (task_score(data->db) >= 20) {
+        return -18;
+    }
     data->argv[0] = TASK;
     strcpy(data->sql, "INSERT INTO TODO (Task,Date) VALUES (?,?);");
     const time_t sec = time(NULL);

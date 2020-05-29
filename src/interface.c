@@ -53,10 +53,12 @@ void update_main_window(GUI* data)
         filling_label(data->builder, i, label_date[i], l_date);
         i++;
     }
-    char l_date[12] = "labelTime";
-    char l_main[15] = "labelM";
-    filling_label(data->builder, i, "\0", l_main);
-    filling_label(data->builder, i, "\0", l_date);
+    if (i < 20) {
+        char l_date[12] = "labelTime";
+        char l_main[15] = "labelM";
+        filling_label(data->builder, i, "\0", l_main);
+        filling_label(data->builder, i, "\0", l_date);
+    }
 }
 
 void show_task_on_add(GtkWidget* widget, gpointer user_data)
@@ -815,6 +817,9 @@ void show_error(int err)
         break;
     case -17:
         open_error_window("Уже добавлено максимальное кол-во категорий!\n");
+        break;
+    case -18:
+        open_error_window("Уже добавлено максимальное кол-во заданий!\n");
         break;
     }
 }
