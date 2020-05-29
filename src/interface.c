@@ -653,8 +653,10 @@ void update_category_window(GUI* data)
         filling_label(data->builder_window_category, i, label[i], l_category);
         i++;
     }
-    char l_category[18] = "categoryLabel";
-    filling_label(data->builder_window_category, i, "\0", l_category);
+    if (i < 20) {
+        char l_category[18] = "categoryLabel";
+        filling_label(data->builder_window_category, i, "\0", l_category);
+    }
 }
 
 void show_category_on_add(GtkWidget* widget, gpointer user_data)
@@ -810,6 +812,9 @@ void show_error(int err)
         break;
     case -16:
         open_error_window("Категория с таким названием уже есть!\n");
+        break;
+    case -17:
+        open_error_window("Уже добавлено максимальное кол-во категорий!\n");
         break;
     }
 }

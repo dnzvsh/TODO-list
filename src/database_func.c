@@ -90,6 +90,9 @@ int update_task(Task_data* data)
 
 int add_category(Task_data* data)
 {
+    if (category_score(data->db) >= 20) {
+        return -17;
+    }
     data->argv[0] = CATEGORY;
     data->argv[1] = CATEGORY_ADD;
     strcpy(data->sql, "INSERT INTO CATEGORIES (category_name) VALUES (?);");
