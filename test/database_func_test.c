@@ -82,6 +82,23 @@ CTEST(test_show_task, correct_show_task)
     // ASSERT_STR(str[i].task, real_task[i]);
 }
 
+CTEST(test_show_task, correct_show_category)
+{
+    char test_category[20][100];
+    char* real_category[3] = {"test_category_1", "test_category_2", "test_category_3"};
+    Task_data data;
+    initialize_db(&data);
+    clear_db(data.db);
+    for (int i = 0; i < 3; i++) {
+        strcpy(data.category_name, real_category[i]);
+        add_category(&data);
+    }
+    int exp = 3;
+    int real = show_category(data.db, test_category);
+    ASSERT_EQUAL(exp, real);
+    // ASSERT_STR(str[i].task, real_task[i]);
+}
+
 CTEST(test_add_task, correct_add_task)
 {
     test str;
@@ -242,3 +259,43 @@ CTEST(test_category, uncorrect_edit_category)
     ASSERT_STR(str.category_name, real_category);
     ASSERT_EQUAL(exp, real);
 }
+
+CTEST(test_category, add_same_category)
+{
+    test str;
+    char* real_category = "First category";
+    Task_data data;
+    initialize_db(&data);
+    clear_db(data.db);
+    strcpy(data.category_name, real_category);
+    data.new_category_name[0] = '\0';
+    int exp = -16;
+    add_category(&data);
+    int real = add_category(&data);
+    show_database_with_par(data.db, "Category", &str, "First category");
+    ASSERT_STR(str.category_name, real_category);
+    ASSERT_EQUAL(exp, real);
+}
+
+CTEST(test_category, delete_category_for_task)
+{
+    test str;
+    char* real_category = "First category";
+    char* real_task = "First task";
+    Task_data data;
+    initialize_db(&data);
+    clear_db(data.db);
+    strcpy(data.category_name, real_category);
+    strcpy(data.task, real_task);
+    data.new_category_name[0] = '\0';
+    int exp = -15;
+    add_category(&data);
+    add_task(&data);
+    bind_category_for_task(&data);
+    int real = delete_category(&data);
+    show_database_with_par(data.db, "Category", &str, "First category");
+    ASSERT_STR(str.category_name, real_category);
+    ASSERT_EQUAL(exp, real);
+}
+
+
