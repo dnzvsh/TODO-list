@@ -29,6 +29,7 @@ typedef struct {
     GtkBuilder* builder_window;
     GtkBuilder* builder_window_category;
     GtkBuilder* builder_add_window_category;
+    GtkBuilder* builder_window_category_task;
     int is_main;
     int number_button_category;
 } GUI;
