@@ -3,6 +3,21 @@
 #include <stdio.h>
 #include <time.h>
 
+int database_open(sqlite3** db)
+{
+    if (sqlite3_open(DATABASE_PATH, db)) {
+        return -1;
+    }
+
+    if (sqlite3_exec(*db, TODO, 0, 0, NULL)) {
+        return -1;
+    }
+    if (sqlite3_exec(*db, CATEGORIES, 0, 0, NULL)) {
+        return -1;
+    }
+    return 0;
+}
+
 int sql_request(Task_data* data)
 {
     sqlite3_stmt* stmt;

@@ -37,6 +37,8 @@ typedef struct {
     int task_category_id;
 } Task_data;
 
+int database_open(sqlite3** db);
+
 int show_task(sqlite3* db, char label_main[][1000], char label_date[][26]);
 
 int update_task(Task_data* data);
