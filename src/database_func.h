@@ -20,6 +20,10 @@
 #define CATEGORY_DELETE 4
 #define CATEGORY_UPDATE 5
 #define CATEGORY_BIND 6
+#define MAX_CHAR_TASK 1000
+#define MAX_CHAR_DATA 26
+#define MAX_CHAR_CATEGORY 100
+#define MAX_COUNT 20
 
 #include <gtk/gtk.h>
 #include <sqlite3.h>
