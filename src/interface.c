@@ -561,7 +561,7 @@ void bind_category_task_click(GUI* data)
             data->builder_window_category,
             define_name_widget(categoryLabel, data->number_button_category)));
     strcpy(data->task.category_name, (char*)gtk_label_get_text(label));
-    window_enabled(data->builder, "mainWindow");
+    window_enabled(data->builder_window, "addWindow");
 }
 
 void bind_click(GtkWidget* widget, gpointer user_data)
