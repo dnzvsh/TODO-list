@@ -38,7 +38,7 @@ int read_buffer(GtkBuilder* builder, char* text_id, char* text, int type_label)
     gtk_text_buffer_get_end_iter(buffer, &end);
     if (type_label == 1) {
         if (strlen((char*)gtk_text_buffer_get_text(buffer, &start, &end, FALSE))
-            >= MAX_CHAR_LABEL) {
+            >= MAX_CHAR_CATEGORY) {
             show_error(-19);
             text[0] = '\0';
             return -1;
@@ -561,7 +561,7 @@ void bind_category_task_click(GUI* data)
             data->builder_window_category,
             define_name_widget(categoryLabel, data->number_button_category)));
     strcpy(data->task.category_name, (char*)gtk_label_get_text(label));
-    window_enabled(data->builder, "mainWindow");
+    window_enabled(data->builder_window, "addWindow");
 }
 
 void bind_click(GtkWidget* widget, gpointer user_data)
@@ -747,7 +747,7 @@ void add_category_window(GtkWidget* widget, gpointer user_data)
 
 void update_category_window(GUI* data)
 {
-    char label[MAX_COUNT][MAX_CHAR_LABEL];
+    char label[MAX_COUNT][MAX_CHAR_CATEGORY];
     int j = show_category(data->task.db, label);
     int i = 0;
     while (i < j) {
@@ -848,7 +848,7 @@ void open_task_sort_category_window(GtkWidget* widget, gpointer user_data)
             = GTK_BUTTON(gtk_builder_get_object(builder, "cancelButton"));
 
     GUI* showButton = malloc(sizeof(GUI) * MAX_COUNT);
-    char labels_category[MAX_COUNT][MAX_CHAR_LABEL];
+    char labels_category[MAX_COUNT][MAX_CHAR_CATEGORY];
     for (int i = 0; i < MAX_COUNT; i++) {
         labels_category[i][0] = '\0';
     }

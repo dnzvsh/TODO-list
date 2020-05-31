@@ -2,10 +2,14 @@
 #include "database_func.h"
 #include <string.h>
 
+#define TEST_DATABASE_PATH "src/database_test.db"
+#define CLEAR_TODO "DELETE from TODO"
+#define CLEAR_CATEGORIES "DELETE from CATEGORIES"
+
 typedef struct {
-    char date[26];
-    char category_name[100];
-    char task[1000];
+    char date[MAX_CHAR_DATA];
+    char category_name[MAX_CHAR_CATEGORY];
+    char task[MAX_CHAR_TASK];
 } test;
 
 void show_database_with_par(sqlite3* db, char* par, test* buf, char* str)
@@ -37,7 +41,7 @@ void show_database_with_par(sqlite3* db, char* par, test* buf, char* str)
     }
     sqlite3_bind_text(stmt, 1, str, -1, NULL);
     int err = sqlite3_step(stmt);
-    if (err == 101) {
+    if (err == SQLITE_DONE) {
         buf->task[0] = '\0';
         buf->category_name[0] = '\0';
     } else {
@@ -53,21 +57,21 @@ void show_database_with_par(sqlite3* db, char* par, test* buf, char* str)
 
 void initialize_db(Task_data* data)
 {
-    sqlite3_open("src/database_test.db", &data->db);
+    sqlite3_open(TEST_DATABASE_PATH, &data->db);
     sqlite3_exec(data->db, TODO, 0, 0, NULL);
     sqlite3_exec(data->db, CATEGORIES, 0, 0, NULL);
 }
 
 void clear_db(sqlite3* db)
 {
-    sqlite3_exec(db, "DELETE from TODO", 0, 0, NULL);
-    sqlite3_exec(db, "DELETE from CATEGORIES", 0, 0, NULL);
+    sqlite3_exec(db, CLEAR_TODO, 0, 0, NULL);
+    sqlite3_exec(db, CLEAR_CATEGORIES, 0, 0, NULL);
 }
 
 CTEST(test_show_task, correct_show_task)
 {
-    char test_task[20][1000];
-    char test_date[20][26];
+    char test_task[MAX_COUNT][MAX_CHAR_TASK];
+    char test_date[MAX_COUNT][MAX_CHAR_DATE];
     char* real_task[3] = {"test_task_1", "test_task_2", "test_task_3"};
     Task_data data;
     initialize_db(&data);
@@ -84,8 +88,9 @@ CTEST(test_show_task, correct_show_task)
 
 CTEST(test_show_task, correct_show_category)
 {
-    char test_category[20][100];
-    char* real_category[3] = {"test_category_1", "test_category_2", "test_category_3"};
+    char test_category[MAX_COUNT][MAX_CHAR_CATEGORY];
+    char* real_category[3]
+            = {"test_category_1", "test_category_2", "test_category_3"};
     Task_data data;
     initialize_db(&data);
     clear_db(data.db);
@@ -297,5 +302,3 @@ CTEST(test_category, delete_category_for_task)
     ASSERT_STR(str.category_name, real_category);
     ASSERT_EQUAL(exp, real);
 }
-
-
