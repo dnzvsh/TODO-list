@@ -5,5 +5,9 @@ compiler: gcc
 dist: xenial
 
 script:
-  - cmake
+  - make
+  ./bin/database-test
   - git ls-files src/ | xargs clang-format -i && git diff --exit-code
+  before_install:
+    - sudo apt-get update -qq
+    - sudo apt-get install -qq libgtk-3-dev
