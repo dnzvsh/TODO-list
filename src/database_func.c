@@ -245,7 +245,7 @@ int show_task(
     return j;
 }
 
-int show_category(sqlite3* db, char label_main[][MAX_CHAR_LABEL])
+int show_category(sqlite3* db, char label_main[][MAX_CHAR_CATEGORY])
 {
     sqlite3_stmt* stmt;
     int j = 0;

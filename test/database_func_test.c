@@ -71,7 +71,7 @@ void clear_db(sqlite3* db)
 CTEST(test_show_task, correct_show_task)
 {
     char test_task[MAX_COUNT][MAX_CHAR_TASK];
-    char test_date[MAX_COUNT][MAX_CHAR_DATE];
+    char test_date[MAX_COUNT][MAX_CHAR_DATA];
     char* real_task[3] = {"test_task_1", "test_task_2", "test_task_3"};
     Task_data data;
     initialize_db(&data);
